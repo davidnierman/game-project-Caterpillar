@@ -8,7 +8,7 @@
 
 A text from a friend:
 
-*"You are like a butteryfly and they trapped you in a glass jar, and sure overtime you've learned to love the glass jar, she's put in a little branch for you and some leaves and you've gotten used to your little glass jar, but now they opened the jar and you're starting to poke you head out and see the world and it's big and scary because you've been in your little jar, but as soon as you take a leap of faith and fly out of the jar into the real forest you realize how much you should have been out in the wild long ago"*
+*"You are like a butteryfly and they trapped you in a glass jar, and sure overtime you've learned to love the glass jar, they have put in a little branch for you and some leaves and you've gotten used to your little glass jar, but now they opened the jar and you're starting to poke you head out and see the world and it's big and scary because you've been in your little jar, but as soon as you take a leap of faith and fly out of the jar into the real forest you realize how much you should have been out in the wild long ago"*
 
 
 
