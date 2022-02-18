@@ -43,7 +43,11 @@ A text from a friend:
 
 ## User Story
 #
-## User
+## Opening Scene
+  - Modal will appear that says
+     -  " While in the midst of serios internal growth, respect your need to rest" - yung pueblo
+
+## Game Layout     
 
 **Background**
  - A view of the forrest
@@ -53,9 +57,6 @@ A text from a friend:
      - Container for the Catepillar
  - A Lid to the Jar
 
- **Opening Scene**
-  - Modal will appear that says
-     -  " While in the midst of serios internal growth, respect your need to rest" - yung pueblo 
 
  **Character**
   - Caterpillar
@@ -72,6 +73,8 @@ A text from a friend:
  **Sleep**
  - **Sleep Mode:** when the caterpillar is in the grid
     - There will be a grid to represent a bed
+
+## Growth Points
 
   **Sleeping Points:**
   - Points that need to be met before caterpillar is ready to cacoon
@@ -90,7 +93,7 @@ A text from a friend:
      -  reduce *Sleeping Points*
      - reduce *Eating Points*
 
-## Winning Scenes
+## Winning Scene
   - **The Transformation:**
      - The buttons to control caterpillar will disappear
      - The cateripplar will move to the middle the jar and change into a cacoon
@@ -99,7 +102,6 @@ A text from a friend:
      - After (*some number*) of seconds the cacoon will turn into a butterfly
     - After (*some number*) of seconds the lid to the jar will disappear (change opacity)
     - After (*some number) of seconds the glass jar will disapear
-  - **Ending Scene**
     - Ending quotes appear on the screen as a modal
          - "It's time to fly"
 
