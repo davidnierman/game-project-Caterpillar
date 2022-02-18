@@ -35,6 +35,7 @@ A text from a friend:
         - images
 
 2. JS
+    - Canvas
     - DOM Manipulation
     - Tming Functions
 
