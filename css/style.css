@@ -4,13 +4,27 @@ body {
     margin: 0;
     opacity: 0.5;
     overflow: hidden;
+    display: flex;
 }
 
 #divBackgroundScene {
     background-image: url(../img/forrestBackground.jpeg);
     background-size: cover;
     position: absolute;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
     height: 100%;
     width: 100%
+    
 }
+
+#divGlassJar {
+    background-image:  url(../img/glassJar.png);
+    position: absolute;
+    height: 85%;
+    width: 50%;
+    margin: 2%;
+}
+
 
