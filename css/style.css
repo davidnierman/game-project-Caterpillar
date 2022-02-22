@@ -1,8 +1,8 @@
-body {
-    height: 100%;
-    width: 100%;
-    margin: 0;
-    opacity: 0.5;
+ * {
+     box-sizing: border-box;
+ }
+ 
+ body {
     overflow: hidden;
     display: flex;
 }
@@ -10,24 +10,18 @@ body {
 #divBackgroundScene {
     background-image: url(../img/forrestBackground.jpeg);
     background-size: cover;
+    opacity: 0.5;
     position: absolute;
     height: 100%;
-    width: 100%
-    
-}
-main {
+    width: 100%;
     display: flex;
-    align-items: flex-end;
+    align-items: center;
     justify-content: center;
-    height: 100%;
-    width: 100%  
 }
 
 #canvasGlassJar {
     background-image:  url(../img/glassJar.png);
     position: absolute;
-    height: 85%;
-    width: 50%;
     margin: 2%;
 }
 
