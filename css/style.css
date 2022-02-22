@@ -1,6 +1,16 @@
 body {
-    background-image: url(../img/forrestBackground.jpeg);
+    height: 100%;
+    width: 100%;
+    margin: 0;
     opacity: 0.5;
-    background-size: 100%;
+    overflow: hidden;
+}
+
+#divBackgroundScene {
+    background-image: url(../img/forrestBackground.jpeg);
+    background-size: cover;
+    position: absolute;
+    height: 100%;
+    width: 100%
 }
 
