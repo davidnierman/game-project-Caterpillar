@@ -27,14 +27,8 @@ class interactiveElement {
         this.eatingPoints = 1,
         this.sleepingPoints = 0.5,
         this.increaseEatPoints = function () {
-            console.log('increasing eating points')
-            this.eatingPoints += 1
-            console.log('Caterpillar Height Before:', this.height)
-            console.log('Caterpillar Width Before:', this.width)
             this.height += this.eatingPoints
-            console.log('Caterpillar Height After:', this.height)
             this.width += this.eatingPoints
-            console.log('Caterpillar Width After', this.width)
         }
         this.increaseSleepPoints = function () {
             this.sleepingPoints += 0.05
