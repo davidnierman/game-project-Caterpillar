@@ -89,15 +89,15 @@ const eat = (e) => {
 const foods = []
 
 // create a function that creates food
-const createFood = () => {
-    let foodX = 100;
-    let foodY = 222;
+const createFood = (numberOfFoods) => {
+    for(let i = 0; i < numberOfFoods; i++) {
+    let foodX = Math.floor(Math.random() * 375);
+    let foodY = Math.floor(Math.random() * 325);
     let foodWidth = 10;
     let foodHeight = 10;
     let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,"red")
-    console.log('this is the food instance ', food)
     foods.push(food)
-    console.log('list of foods', foods)
+    }
 }
 
 
@@ -111,8 +111,7 @@ const screenRefresh = () => {
     caterpillar.increaseSleepPoints()
     bed.render()
     caterpillar.render()
-    console.log('this is the food object,', foods[0])
-    foods[0].render() //<--THE ISSUE IS HERE
+    foods.forEach(element => element.render())
 }
 
 
@@ -120,6 +119,6 @@ const screenRefresh = () => {
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler)
     document.addEventListener('keydown', eat)
-    createFood()
+    createFood(5)
     setInterval(screenRefresh, 50) // refresh screen every 50 ms
 })
