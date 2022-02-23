@@ -20,25 +20,26 @@ class interactiveElement {
         this.render = function() {
             ctx.fillStyle = this.color // change this later to an image instead of a color
             ctx.fillRect(this.x, this.y,this.width, this.height)
+            ctx.localAlpha = this.opacity; // --> there is an issue here with opacity
             // ctx.fillRect will draw a rectangle on the canvas 
             // will be replacing this with an image --> https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             //ctx.drawImage('../img/Caterpillar.png', 3, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
         }
         this.eatingPoints = 1,
-        this.sleepingPoints = 0.5,
         this.increaseEatPoints = function () {
             this.height += this.eatingPoints
             this.width += this.eatingPoints
         }
         this.increaseSleepPoints = function () {
-            this.sleepingPoints += 0.05
-            this.opacity =  sleepingPoints
+            console.log('this is the current opacity', this.opacity)
+            this.opacity += 0.05
+            this.color = `rgba(35, 224, 72, ${this.opacity})`
         }
     }
 }
 
 // create Caterpillar
-let caterpillar = new interactiveElement(450,425,5,5,"green",0.5)
+let caterpillar = new interactiveElement(450,425,5,5,"rgba(35, 224, 72, 0.20)", 0.20)
 let bed = new interactiveElement(400,350,100,150,"white")
 
 // create function that receives a 'keydown' and moves accordingly
@@ -68,12 +69,22 @@ const movementHandler = (e) => {
 }
 
 // create a function that increases the size of the Caterpillar when it eats
-// e key = 69 --> e for eat
+// e key = 69 --> 'e' for eat
 const eat = (e) => {
     if (e.keyCode === 69){
         console.log('yyyyyyyyuuuuuuuummmmmmmmmmyyyyyy!!!!!!!!')
         caterpillar.increaseEatPoints()
     }
+}
+
+// create a function that increase the opacity of the Caterpillar when it sleeps (spends time in the bed)
+// s key = 83 --> 's' for sleep
+const sleep = (e) => {
+    if (e.keyCode === 83){
+        console.log('zzzzzzzzz   zzzzzzzzz zzzzzzzz')
+        caterpillar.increaseSleepPoints()
+    }
+    
 }
 
 
@@ -90,5 +101,6 @@ const screenRefresh = () => {
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler)
     document.addEventListener('keydown', eat)
+    document.addEventListener('keydown', sleep)
     setInterval(screenRefresh, 50) // refresh screen every 50 ms
 })
