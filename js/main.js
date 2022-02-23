@@ -160,7 +160,6 @@ const eatIndicator = () => {
             && caterpillar.y < foods[i].y + foods[i].height
             && caterpillar.y + caterpillar.height > foods[i].y
         ){
-            console.log("yumm Caterpillar just ate food number, ", i)
             caterpillar.increaseEatPoints()
             foods.splice(i,1)
         }
@@ -184,12 +183,10 @@ const drainSleep = () => {
 
 const checkWinner = () => {
     if(caterpillar.foodsEaten >= fooEatenToWin){
-        console.log("you won!!!!!!!!!!")
         alert("you won! congrats for eating all the food")
-        timers.forEach(timer => clearInterval(timer))
+        timers.forEach(timer => clearInterval(timer)) // stop game play
     }
 }
-
 
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {

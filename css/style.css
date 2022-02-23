@@ -23,4 +23,21 @@ html {
     margin: 2%;
 }
 
+#toastContainer{
+    display: flex;
+    flex-flow: column;
+    justify-content: space-between;
+}
+
+
+element.style {
+}
+.toast:not(:last-child) {
+    margin-bottom: 0.75rem;
+}
+.toast{
+    opacity: 1;
+}
+
+
 
