@@ -27,12 +27,16 @@ class interactiveElement {
         this.eatingPoints = 1,
         this.sleepingPoints = 0.5,
         this.increaseEatPoints = function () {
+            console.log('increasing eating points')
             this.eatingPoints += 1
-            this.height *= this.eatingPoints
-            this.width *= this.sleepingPoints
+            console.log('Caterpillar Height Before:', this.height)
+            console.log('Caterpillar Width Before:', this.width)
+            this.height += this.eatingPoints
+            console.log('Caterpillar Height After:', this.height)
+            this.width += this.eatingPoints
+            console.log('Caterpillar Width After', this.width)
         }
         this.increaseSleepPoints = function () {
-            console.log("this is running for some reasons")
             this.sleepingPoints += 0.05
             this.opacity =  sleepingPoints
         }
@@ -40,7 +44,7 @@ class interactiveElement {
 }
 
 // create Caterpillar
-let caterpillar = new interactiveElement(450,425,25,5,"green",0.5)
+let caterpillar = new interactiveElement(450,425,5,5,"green",0.5)
 let bed = new interactiveElement(400,350,100,150,"white")
 
 // create function that receives a 'keydown' and moves accordingly
@@ -69,6 +73,16 @@ const movementHandler = (e) => {
     
 }
 
+// create a function that increases the size of the Caterpillar when it eats
+// e key = 69 --> e for eat
+const eat = (e) => {
+    if (e.keyCode === 69){
+        console.log('yyyyyyyyuuuuuuuummmmmmmmmmyyyyyy!!!!!!!!')
+        caterpillar.increaseEatPoints()
+    }
+}
+
+
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
@@ -81,5 +95,6 @@ const screenRefresh = () => {
 //add event listeners
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler)
+    document.addEventListener('keydown', eat)
     setInterval(screenRefresh, 50) // refresh screen every 50 ms
 })
