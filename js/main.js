@@ -45,7 +45,7 @@ class interactiveElement {
     }
 }
 
-// create Caterpillar
+// create Caterpillar & Bed
 let caterpillar = new interactiveElement(350,325,5,5,"rgba(23, 101, 26, 0.5)", 0.50)
 let bed = new interactiveElement(400,350,100,150,"white")
 
@@ -85,6 +85,24 @@ const eat = (e) => {
 }
 
 
+// create a list of food instances
+const foods = []
+
+// create a function that creates food
+const createFood = () => {
+    let foodX = 100;
+    let foodY = 222;
+    let foodWidth = 10;
+    let foodHeight = 10;
+    let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,"red")
+    console.log('this is the food instance ', food)
+    foods.push(food)
+    console.log('list of foods', foods)
+}
+
+
+
+
 
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
@@ -93,6 +111,8 @@ const screenRefresh = () => {
     caterpillar.increaseSleepPoints()
     bed.render()
     caterpillar.render()
+    console.log('this is the food object,', foods[0])
+    foods[0].render() //<--THE ISSUE IS HERE
 }
 
 
@@ -100,5 +120,6 @@ const screenRefresh = () => {
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler)
     document.addEventListener('keydown', eat)
+    createFood()
     setInterval(screenRefresh, 50) // refresh screen every 50 ms
 })
