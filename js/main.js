@@ -31,15 +31,22 @@ class interactiveElement {
             this.width += this.eatingPoints
         }
         this.increaseSleepPoints = function () {
-            console.log('this is the current opacity', this.opacity)
-            this.opacity += 0.05
-            this.color = `rgba(35, 224, 72, ${this.opacity})`
+            if (caterpillar.x > bed.x 
+                && caterpillar.x + caterpillar.width < bed.x + bed.width
+                && caterpillar.y > bed.y
+                && caterpillar.y + caterpillar.height < bed.y + bed.height
+            ){ 
+                console.log('zzzzzzzzz   zzzzzzzzz zzzzzzzz')
+                console.log('current opacity,',this.opacity)
+                this.opacity += 0.007
+                this.color = `rgba(35, 224, 72, ${this.opacity})`
+            }
         }
     }
 }
 
 // create Caterpillar
-let caterpillar = new interactiveElement(450,425,5,5,"rgba(35, 224, 72, 0.20)", 0.20)
+let caterpillar = new interactiveElement(350,325,5,5,"rgba(23, 101, 26, 0.5)", 0.50)
 let bed = new interactiveElement(400,350,100,150,"white")
 
 // create function that receives a 'keydown' and moves accordingly
@@ -77,21 +84,13 @@ const eat = (e) => {
     }
 }
 
-// create a function that increase the opacity of the Caterpillar when it sleeps (spends time in the bed)
-// s key = 83 --> 's' for sleep
-const sleep = (e) => {
-    if (e.keyCode === 83){
-        console.log('zzzzzzzzz   zzzzzzzzz zzzzzzzz')
-        caterpillar.increaseSleepPoints()
-    }
-    
-}
 
 
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
     ctx.clearRect(0,0,500,500)
+    caterpillar.increaseSleepPoints()
     bed.render()
     caterpillar.render()
 }
@@ -101,6 +100,5 @@ const screenRefresh = () => {
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler)
     document.addEventListener('keydown', eat)
-    document.addEventListener('keydown', sleep)
     setInterval(screenRefresh, 50) // refresh screen every 50 ms
 })
