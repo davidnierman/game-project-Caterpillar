@@ -33,7 +33,7 @@ const difficultySettings = (difficulty) => {
             eatingIncrementer = 3
             eatingDecrementer = 5
             sleepIncrementer = .03
-            sleepDecrementer = 1
+            sleepDecrementer = .1
             jarSpinRandomIntervalMin = 25*1000
             jarSpinRandomIntervalMax = 30*1000
             break
@@ -43,7 +43,7 @@ const difficultySettings = (difficulty) => {
             eatingIncrementer = 2
             eatingDecrementer = 10
             sleepIncrementer = .02
-            sleepDecrementer = 1
+            sleepDecrementer = .02
             jarSpinRandomIntervalMin = 20*1000
             jarSpinRandomIntervalMax = 25*1000
             break
@@ -53,7 +53,7 @@ const difficultySettings = (difficulty) => {
             eatingIncrementer = 1
             eatingDecrementer = 20
             sleepIncrementer = .01
-            sleepDecrementer = 1
+            sleepDecrementer = .01
             jarSpinRandomIntervalMin = 15*1000
             jarSpinRandomIntervalMax = 20*1000
             break
@@ -95,6 +95,8 @@ class interactiveElement {
         this.render = function() {
             ctx.fillStyle = this.color // change this later to an image instead of a color
             ctx.fillRect(this.x, this.y,this.width, this.height)
+            ctx.strokeStyle = 'black';
+            ctx.strokeRect(this.x, this.y,this.width, this.height); //create a border hopefully not affected by opacity
             ctx.localAlpha = this.opacity; // --> there is an issue here with opacity
             // ctx.fillRect will draw a rectangle on the canvas 
             // will be replacing this with an image --> https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
@@ -119,16 +121,26 @@ class interactiveElement {
         }
         this.sleepIncrementer = sleepIncrementer
         this.increaseSleepPoints = function () {
-            this.opacity += this.sleepIncrementer
-            this.color = `rgba(35, 224, 72, ${this.opacity})`
+            if(this.opacity < 1){
+                this.opacity += this.sleepIncrementer
+                this.color = `rgba(35, 224, 72, ${this.opacity})`
+                console.log('current opacity,', this.opacity)
+            }
             if(this.speed < maxSpeed) {
                 this.speed += this.sleepIncrementer*10;
                 toastSleep.show()
             }
         }
         this.sleepDecrementer = sleepDecrementer
-        this.drainSleepSpeed = function () {
-            if(this.speed>minSpeed) this.speed -= this.sleepDecrementer
+        this.decreaseSleepPoints = function () {
+            if(this.opacity >0.20){
+                this.opacity -= this.sleepDecrementer
+                this.color = `rgba(35, 224, 72, ${this.opacity})`
+                console.log('current opacity,', this.opacity)
+            }
+            if(this.speed>minSpeed) {
+                this.speed -= this.sleepDecrementer*10;
+            }
         }
         // //work on this later to make more fluid movement
         // this.direction = {
@@ -141,8 +153,8 @@ class interactiveElement {
 }
 
 // create Caterpillar & Bed
-let caterpillar = new interactiveElement(450,375,5,5,"rgba(23, 101, 26, 0.5)", 0.20)
-let bed = new interactiveElement(400,350,100,150,"white")
+let caterpillar = new interactiveElement(450,375,5,5,"rgba(23, 101, 26, 0.5)", 0.30)
+let bed = new interactiveElement(400,350,100,150,"black")
 
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
@@ -182,7 +194,7 @@ const createFood = () => {
     let foodY = Math.floor(Math.random() * 325); // trying to keep food outside of the bed
     let foodWidth = 10;
     let foodHeight = 10;
-    let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,"red")
+    let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,"black")
     foods.push(food)
     }
 }
@@ -213,7 +225,7 @@ const sleepIndicator = () => {
 }
 
 const drainSleep = () => {
-    caterpillar.drainSleepSpeed()
+    caterpillar.decreaseSleepPoints()
 }
 
 // create a function that attacks (spins) the player and reduces eatingPoints
