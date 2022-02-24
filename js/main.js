@@ -5,7 +5,7 @@ const difficultyLevels = ['easy', 'medium', 'hard']
 const fooEatenToWin = 40;
 
 //manually set difficuly level for now
-const difficulty = difficultyLevels[0]
+const difficulty = difficultyLevels[0] // setting this to easy for now
 
 // variables that can be modified to change game difficulty
 let maxSpeed;
@@ -34,7 +34,7 @@ const difficultySettings = (difficulty) => {
             eatingDecrementer = 5
             sleepIncrementer = .03
             sleepDecrementer = 1
-            jarSpinRandomIntervalMin = 10*1000
+            jarSpinRandomIntervalMin = 25*1000
             jarSpinRandomIntervalMax = 30*1000
             break
         case('medium'):
@@ -44,7 +44,7 @@ const difficultySettings = (difficulty) => {
             eatingDecrementer = 10
             sleepIncrementer = .02
             sleepDecrementer = 1
-            jarSpinRandomIntervalMin = 8*1000
+            jarSpinRandomIntervalMin = 20*1000
             jarSpinRandomIntervalMax = 25*1000
             break
         case('hard'):
@@ -54,7 +54,7 @@ const difficultySettings = (difficulty) => {
             eatingDecrementer = 20
             sleepIncrementer = .01
             sleepDecrementer = 1
-            jarSpinRandomIntervalMin = 6*1000
+            jarSpinRandomIntervalMin = 15*1000
             jarSpinRandomIntervalMax = 20*1000
             break
     }
@@ -105,15 +105,16 @@ class interactiveElement {
             this.height += this.eatingIncrementer
             this.width += this.eatingIncrementer
             this.foodsEaten += eatingIncrementer
-            console.log('foods eaten, ', this.foodsEaten)
             toastEat.show()
         }
         this.eatingDecrementer = eatingDecrementer,
         this.decreaseEatPoints = function(){
-            this.height -= this.eatingDecrementer
-            this.width -= this.eatingDecrementer
-            this.foodsEaten -= eatingDecrementer
-            console.log('foods eaten, ', this.foodsEaten)
+            if(this.height || this.width > 5){
+                this.height -= this.eatingDecrementer
+                this.width -= this.eatingDecrementer
+                this.foodsEaten -= eatingDecrementer
+                console.log('caterpillar should be shrinking', caterpillar)
+            }
             //toastEat.show() --> change this to a notification to "oh no you have been hit! or your life has been turned upside down!"
         }
         this.sleepIncrementer = sleepIncrementer
@@ -128,7 +129,6 @@ class interactiveElement {
         this.sleepDecrementer = sleepDecrementer
         this.drainSleepSpeed = function () {
             if(this.speed>minSpeed) this.speed -= this.sleepDecrementer
-            console.log('current speed is,', this.speed)
         }
         // //work on this later to make more fluid movement
         // this.direction = {
@@ -141,7 +141,7 @@ class interactiveElement {
 }
 
 // create Caterpillar & Bed
-let caterpillar = new interactiveElement(450,375,5,5,"rgba(23, 101, 26, 0.5)", 0.50)
+let caterpillar = new interactiveElement(450,375,5,5,"rgba(23, 101, 26, 0.5)", 0.20)
 let bed = new interactiveElement(400,350,100,150,"white")
 
 // create function that receives a 'keydown' and moves accordingly
@@ -214,7 +214,6 @@ const sleepIndicator = () => {
 
 const drainSleep = () => {
     caterpillar.drainSleepSpeed()
-    console.log("sleep is draining")
 }
 
 // create a function that attacks (spins) the player and reduces eatingPoints
@@ -223,11 +222,11 @@ const jarSpins = () => {
     let startingDegrees = 0
     const rotateJar = () => {
         canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
-        console.log('rotating 90 degrees, ', canvasGlassJar)
     }
     const rotateJarInterval = setInterval(rotateJar,500)
     //var timeoutID = setTimeout(function[, delay, arg1, arg2, ...]);
     setTimeout(clearInterval,2000, rotateJarInterval)
+    caterpillar.decreaseEatPoints()
 }
 
 
