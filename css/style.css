@@ -15,7 +15,7 @@ html {
    display: flex;
    align-items: center;
    justify-content:flex-start;
-   gap: 10px;
+   gap: 10px, 10px;
    flex-direction: row;
 } 
 
@@ -29,6 +29,15 @@ html {
     display: flex;
     flex-flow: column;
     justify-content:center;
+}
+
+#author{
+    position: absolute;
+    left: 75%;
+    top: 75%;
+    color: black;
+    text-shadow: 2px 2px red;
+    font-family: Arial, Helvetica, sans-serif;
 }
 
 
