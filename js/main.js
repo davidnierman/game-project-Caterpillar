@@ -2,7 +2,7 @@
 const difficultyLevels = ['easy', 'medium', 'hard']
 
 // how much food needs to eat to win
-const fooEatenToWin = 40;
+const fooEatenToWin = 60;
 
 //manually set difficuly level for now
 const difficulty = difficultyLevels[0] // setting this to easy for now
@@ -158,7 +158,7 @@ class interactiveElement {
 }
 
 // create Caterpillar & Bed
-let caterpillar = new interactiveElement(450,375,5,5,'rgba(212, 254, 0, 1)',caterpillarImage,)
+let caterpillar = new interactiveElement(450,375,25,25,'rgba(212, 254, 0, 1)',caterpillarImage,)
 let bed = new interactiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoonImage)
 
 // create function that receives a 'keydown' and moves accordingly
