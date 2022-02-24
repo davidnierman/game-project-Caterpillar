@@ -48,7 +48,7 @@ const difficultySettings = (difficulty) => {
 difficultySettings(difficulty)
 
 //globals for items on the screen that will need to be referenced
-const glassJar = document.getElementById('canvasGlassJar')
+const canvasGlassJar = document.getElementById('canvasGlassJar')
 const divToastEat = document.getElementById('divToastEat')
 const divToastSleep = document.getElementById('divToastSleep')
 
@@ -63,7 +63,7 @@ const toastSleep = new bootstrap.Toast(divToastSleep, {
 
 // we need to get the game's context, which will allows to specify where to put things
 // and how big to make them
-const ctx = glassJar.getContext('2d')
+const ctx = canvasGlassJar.getContext('2d')
 
 //create a class that will be used to create interactive elements on the screen
 class interactiveElement {
@@ -94,7 +94,11 @@ class interactiveElement {
         }
         this.eatingDecrementer = eatingDecrementer,
         this.decreaseEatPoints = function(){
-
+            this.height -= this.eatingDecrementer
+            this.width -= this.eatingDecrementer
+            this.foodsEaten -= eatingDecrementer
+            console.log('foods eaten, ', this.foodsEaten)
+            //toastEat.show() --> change this to a notification to "oh no you have been hit! or your life has been turned upside down!"
         }
         this.sleepIncrementer = sleepIncrementer
         this.increaseSleepPoints = function () {
@@ -136,11 +140,11 @@ const movementHandler = (e, speed=caterpillar.speed) => {
             break
         case(40): // down arrow
             caterpillar.y += speed;
-            if(caterpillar.y + caterpillar.height>=glassJar.height) caterpillar.y = glassJar.height - caterpillar.height // set outside of the gameboard
+            if(caterpillar.y + caterpillar.height>=canvasGlassJar.height) caterpillar.y = canvasGlassJar.height - caterpillar.height // set outside of the gameboard
             break
         case(39): // right arrow
             caterpillar.x += speed;
-            if(caterpillar.x+ caterpillar.width>= glassJar.width) caterpillar.x = glassJar.width - caterpillar.width  // set outside of the gameboard
+            if(caterpillar.x+ caterpillar.width>= canvasGlassJar.width) caterpillar.x = canvasGlassJar.width - caterpillar.width  // set outside of the gameboard
             break
         case(37): // left arrow
             caterpillar.x -= speed;
@@ -206,6 +210,17 @@ const drainSleep = () => {
 
 // create a function that attacks (spins) the player and reduces eatingPoints
 
+const jarShakes = () => {
+    let startingDegrees = 0
+    const rotateJar = () => {
+        canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
+        console.log('rotating 90 degrees, ', canvasGlassJar)
+    }
+    setInterval(rotateJar,500)
+    setTimeout(clearInterval(rotateJar), 2000)
+    console.log('end of rotation')
+}
+
 
 const checkWinner = () => {
     if(caterpillar.foodsEaten >= fooEatenToWin){
@@ -234,10 +249,11 @@ document.addEventListener('DOMContentLoaded', function() {
     //create Timers
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
     const drainSleepInterval =  setInterval(drainSleep, 2000)
+    const jarShakesInterval = setInterval(jarShakes, 20000)
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
     timers.push(screenRefreshInterval)
-
+    timers.push(jarShakesInterval)
 })
