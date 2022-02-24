@@ -21,6 +21,7 @@ const difficultySettings = (difficulty) => {
             maxSpeed  = 14
             minSpeed = 4
             eatingIncrementer = 3
+            eatingDecrementer = 5
             sleepIncrementer = .03
             sleepDecrementer = 1
             break
@@ -28,6 +29,7 @@ const difficultySettings = (difficulty) => {
             maxSpeed  = 12
             minSpeed = 3
             eatingIncrementer = 2
+            eatingDecrementer = 10
             sleepIncrementer = .02
             sleepDecrementer = 1
             break
@@ -35,6 +37,7 @@ const difficultySettings = (difficulty) => {
             maxSpeed  = 10
             minSpeed = 2
             eatingIncrementer = 1
+            eatingDecrementer = 20
             sleepIncrementer = .01
             sleepDecrementer = 1
             break
@@ -88,6 +91,10 @@ class interactiveElement {
             this.foodsEaten += eatingIncrementer
             console.log('foods eaten, ', this.foodsEaten)
             toastEat.show()
+        }
+        this.eatingDecrementer = eatingDecrementer,
+        this.decreaseEatPoints = function(){
+
         }
         this.sleepIncrementer = sleepIncrementer
         this.increaseSleepPoints = function () {
@@ -196,6 +203,9 @@ const drainSleep = () => {
     caterpillar.drainSleepSpeed()
     console.log("sleep is draining")
 }
+
+// create a function that attacks (spins) the player and reduces eatingPoints
+
 
 const checkWinner = () => {
     if(caterpillar.foodsEaten >= fooEatenToWin){
