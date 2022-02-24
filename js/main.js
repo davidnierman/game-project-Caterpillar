@@ -166,10 +166,11 @@ let bed = new interactiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoon
 // up=38, down=40, left=37, right=39
 const movementHandler = (e, speed=caterpillar.speed) => {
     //console.log('arrow click event received, ', e.keyCode)
+    console.log(`caterpillar coordinates (${caterpillar.x},${caterpillar.y})`)
     switch(e.keyCode){
         case(38): //up arrow
             caterpillar.y -= speed;
-            if(caterpillar.y <0) caterpillar.y = 0; // set outside of the gameboard
+            if(caterpillar.y <78) caterpillar.y = 78; // the jar lid start at the y coordinate 78
             break
         case(40): // down arrow
             caterpillar.y += speed;
@@ -195,10 +196,10 @@ const createFood = () => {
     let numberOfFoods = getRandomIntInclusive(1,10);
     foods = []
     for(let i = 0; i < numberOfFoods; i++) {
-    let foodX = Math.floor(Math.random() * 375); // trying to keep food outside of the bed
-    let foodY = Math.floor(Math.random() * 325); // trying to keep food outside of the bed
-    let foodWidth = 10;
-    let foodHeight = 10;
+    let foodX = Math.floor(Math.random() * 500); // trying to keep food outside of the bed
+    let foodY = getRandomIntInclusive(78,500); // trying to keep food outside of the bed
+    let foodWidth = 20;
+    let foodHeight = 20;
     let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,'rgba(255, 255, 255, 0)',antImage)
     foods.push(food)
     }
