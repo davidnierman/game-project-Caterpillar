@@ -13,6 +13,16 @@ let minSpeed;
 let eatingIncrementer;
 let sleepIncrementer;
 let sleepDecrementer;
+let jarSpinRandomIntervalMin;
+let jarSpinRandomIntervalMax;
+
+//Helper function for random numbers in a set interval
+//create a function for random number that has a min and max
+function getRandomIntInclusive(min, max) {
+    min = Math.ceil(min);
+    max = Math.floor(max);
+    return Math.floor(Math.random() * (max - min + 1) + min);
+  }
 
 // create case staement based on difficuly level
 const difficultySettings = (difficulty) => {
@@ -24,6 +34,8 @@ const difficultySettings = (difficulty) => {
             eatingDecrementer = 5
             sleepIncrementer = .03
             sleepDecrementer = 1
+            jarSpinRandomIntervalMin = 10*1000
+            jarSpinRandomIntervalMax = 30*1000
             break
         case('medium'):
             maxSpeed  = 12
@@ -32,6 +44,8 @@ const difficultySettings = (difficulty) => {
             eatingDecrementer = 10
             sleepIncrementer = .02
             sleepDecrementer = 1
+            jarSpinRandomIntervalMin = 8*1000
+            jarSpinRandomIntervalMax = 25*1000
             break
         case('hard'):
             maxSpeed  = 10
@@ -40,6 +54,8 @@ const difficultySettings = (difficulty) => {
             eatingDecrementer = 20
             sleepIncrementer = .01
             sleepDecrementer = 1
+            jarSpinRandomIntervalMin = 6*1000
+            jarSpinRandomIntervalMax = 20*1000
             break
     }
 }
@@ -157,13 +173,6 @@ const movementHandler = (e, speed=caterpillar.speed) => {
 // create a list of food instances
 let foods = []
 
-//create a function for random number that has a min and max
-function getRandomIntInclusive(min, max) {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
 // create a function that creates food
 const createFood = () => {
     let numberOfFoods = getRandomIntInclusive(1,10);
@@ -210,15 +219,15 @@ const drainSleep = () => {
 
 // create a function that attacks (spins) the player and reduces eatingPoints
 
-const jarShakes = () => {
+const jarSpins = () => {
     let startingDegrees = 0
     const rotateJar = () => {
         canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
         console.log('rotating 90 degrees, ', canvasGlassJar)
     }
-    setInterval(rotateJar,500)
-    setTimeout(clearInterval(rotateJar), 2000)
-    console.log('end of rotation')
+    const rotateJarInterval = setInterval(rotateJar,500)
+    //var timeoutID = setTimeout(function[, delay, arg1, arg2, ...]);
+    setTimeout(clearInterval,2000, rotateJarInterval)
 }
 
 
@@ -249,7 +258,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //create Timers
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
     const drainSleepInterval =  setInterval(drainSleep, 2000)
-    const jarShakesInterval = setInterval(jarShakes, 20000)
+    const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(jarSpinRandomIntervalMin, jarSpinRandomIntervalMax))
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
