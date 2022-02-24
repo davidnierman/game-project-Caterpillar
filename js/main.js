@@ -67,6 +67,10 @@ difficultySettings(difficulty)
 const canvasGlassJar = document.getElementById('canvasGlassJar')
 const divToastEat = document.getElementById('divToastEat')
 const divToastSleep = document.getElementById('divToastSleep')
+//images for gameboard aka jar
+const caterpillarImage = document.getElementById('caterpillarImage')
+const antImage = document.getElementById('antImage')
+const cacoonImage = document.getElementById('cacoonImage')
 
 // toast variables with delays
 const toastEat = new bootstrap.Toast(divToastEat, {
@@ -83,24 +87,25 @@ const ctx = canvasGlassJar.getContext('2d')
 
 //create a class that will be used to create interactive elements on the screen
 class interactiveElement {
-    constructor(x,y,width,height,color, opacity=1) {
+    constructor(x, y, width, height, color, image, opacity=1) {
         this.x = x,
         this.y = y,
         this.width = width,
         this.height = height,
         this.color = color,
+        this.image = image,
         this.opacity = opacity,
         this.foodsEaten = 0;
         this.speed = maxSpeed;
         this.render = function() {
-            ctx.fillStyle = this.color // change this later to an image instead of a color
+            ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y,this.width, this.height)
-            ctx.strokeStyle = 'black';
-            ctx.strokeRect(this.x, this.y,this.width, this.height); //create a border hopefully not affected by opacity
+            //ctx.strokeStyle = 'black';
+            //ctx.strokeRect(this.x, this.y,this.width, this.height); //create a border hopefully not affected by opacity
             ctx.localAlpha = this.opacity; // --> there is an issue here with opacity
             // ctx.fillRect will draw a rectangle on the canvas 
             // will be replacing this with an image --> https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
-            //ctx.drawImage('../img/Caterpillar.png', 3, sy, sWidth, sHeight, dx, dy, dWidth, dHeight);
+            ctx.drawImage(this.image,this.x,this.y,this.width, this.height)
         }
         this.eatingIncrementer = eatingIncrementer,
         this.increaseEatPoints = function () {
@@ -123,7 +128,7 @@ class interactiveElement {
         this.increaseSleepPoints = function () {
             if(this.opacity < 1){
                 this.opacity += this.sleepIncrementer
-                this.color = `rgba(35, 224, 72, ${this.opacity})`
+                this.color = `rgba(212, 254, 0, ${this.opacity})`
                 console.log('current opacity,', this.opacity)
             }
             if(this.speed < maxSpeed) {
@@ -135,7 +140,7 @@ class interactiveElement {
         this.decreaseSleepPoints = function () {
             if(this.opacity >0.20){
                 this.opacity -= this.sleepDecrementer
-                this.color = `rgba(35, 224, 72, ${this.opacity})`
+                this.color = `rgba(212, 254, 0, ${this.opacity})`
                 console.log('current opacity,', this.opacity)
             }
             if(this.speed>minSpeed) {
@@ -153,8 +158,8 @@ class interactiveElement {
 }
 
 // create Caterpillar & Bed
-let caterpillar = new interactiveElement(450,375,5,5,"rgba(23, 101, 26, 0.5)", 0.30)
-let bed = new interactiveElement(400,350,100,150,"black")
+let caterpillar = new interactiveElement(450,375,5,5,'rgba(212, 254, 0, 1)',caterpillarImage,)
+let bed = new interactiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoonImage)
 
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
@@ -194,7 +199,7 @@ const createFood = () => {
     let foodY = Math.floor(Math.random() * 325); // trying to keep food outside of the bed
     let foodWidth = 10;
     let foodHeight = 10;
-    let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,"black")
+    let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,'rgba(255, 255, 255, 0)',antImage)
     foods.push(food)
     }
 }
