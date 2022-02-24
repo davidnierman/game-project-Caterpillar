@@ -4,6 +4,9 @@ const difficultyLevels = ['easy', 'medium', 'hard']
 // how much food needs to eat to win
 const fooEatenToWin = 60;
 
+// variable boolean whether or not the player has been notified that they have won
+let winAlerted = false;
+
 //manually set difficuly level for now
 const difficulty = difficultyLevels[0] // setting this to easy for now
 
@@ -71,6 +74,7 @@ const divToastSleep = document.getElementById('divToastSleep')
 const caterpillarImage = document.getElementById('caterpillarImage')
 const antImage = document.getElementById('antImage')
 const cacoonImage = document.getElementById('cacoonImage')
+const butterflyImage = document.getElementById('butterflyImage')
 
 // toast variables with delays
 const toastEat = new bootstrap.Toast(divToastEat, {
@@ -160,29 +164,49 @@ class interactiveElement {
 // create Caterpillar & Bed
 let caterpillar = new interactiveElement(450,375,25,25,'rgba(212, 254, 0, 1)',caterpillarImage,)
 let bed = new interactiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoonImage)
+let butterfly = new interactiveElement(250,250,100,100,'rgba(255, 255, 255, 0)',butterflyImage)
+
+
+const checkWinner = () => {
+    if(caterpillar.foodsEaten >= fooEatenToWin){ // need this and to avoid endless loop
+        timers.forEach(timer => clearInterval(timer)) // stop game play except for screen refresh
+        return true
+    }
+    return false
+}
 
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
 // up=38, down=40, left=37, right=39
 const movementHandler = (e, speed=caterpillar.speed) => {
     //console.log('arrow click event received, ', e.keyCode)
-    console.log(`caterpillar coordinates (${caterpillar.x},${caterpillar.y})`)
+    let character;
+    console.log('checkWinner value: ', checkWinner())
+    if(!checkWinner()){
+        console.log ('caterpillar object', caterpillar)
+        character = caterpillar
+    }
+    else{
+        console.log('butterfly object', butterfly)
+        character = butterfly
+    }
+    console.log(`character coordinates (${character.x},${character.y})`)
     switch(e.keyCode){
         case(38): //up arrow
-            caterpillar.y -= speed;
-            if(caterpillar.y <78) caterpillar.y = 78; // the jar lid start at the y coordinate 78
+            character.y -= speed;
+            if(character.y <78 && character == caterpillar) character.y = 78; // the jar lid start at the y coordinate 78
             break
         case(40): // down arrow
-            caterpillar.y += speed;
-            if(caterpillar.y + caterpillar.height>=canvasGlassJar.height) caterpillar.y = canvasGlassJar.height - caterpillar.height // set outside of the gameboard
+            character.y += speed;
+            if(character.y + character.height>=canvasGlassJar.height && character == caterpillar) character.y = canvasGlassJar.height - character.height // set outside of the gameboard
             break
         case(39): // right arrow
-            caterpillar.x += speed;
-            if(caterpillar.x+ caterpillar.width>= canvasGlassJar.width) caterpillar.x = canvasGlassJar.width - caterpillar.width  // set outside of the gameboard
+            character.x += speed;
+            if(character.x+ character.width>= canvasGlassJar.width && character == caterpillar) character.x = canvasGlassJar.width - character.width  // set outside of the gameboard
             break
         case(37): // left arrow
-            caterpillar.x -= speed;
-            if(caterpillar.x<0) caterpillar.x = 0   // set outside of the gameboard
+        character.x -= speed;
+            if(character.x<0 && character == caterpillar) character.x = 0   // set outside of the gameboard
             break
     }
     
@@ -249,30 +273,35 @@ const jarSpins = () => {
 }
 
 
-const checkWinner = () => {
-    if(caterpillar.foodsEaten >= fooEatenToWin){
-        alert("you won! congrats for eating all the food")
-        timers.forEach(timer => clearInterval(timer)) // stop game play
-    }
-}
-
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
-    ctx.clearRect(0,0,500,500)
-    bed.render()
-    caterpillar.render()
-    sleepIndicator()
-    foods.forEach(element => element.render())
-    eatIndicator()
-    checkWinner()
+    console.log('did we win??? ', checkWinner())
+    if(!checkWinner()){
+        ctx.clearRect(0,0,500,500)
+        checkWinner()
+        bed.render()
+        caterpillar.render()
+        sleepIndicator()
+        foods.forEach(element => element.render())
+        eatIndicator()
+    }
+    else {
+        ctx.clearRect(0,0,500,500)
+        console.log('winAlerted value, ', winAlerted)
+        if(!winAlerted){
+            winAlerted = true
+            alert("you've won it's time to fly away!")
+        }
+        butterfly.render()
+    }
 }
 
 const timers = []
 
 //add event listeners
 document.addEventListener('DOMContentLoaded', function() {
-    document.addEventListener('keydown', movementHandler)
+    document.addEventListener('keydown', movementHandler,)
     //create Timers
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
     const drainSleepInterval =  setInterval(drainSleep, 2000)
@@ -281,6 +310,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
-    timers.push(screenRefreshInterval)
+    //timers.push(screenRefreshInterval) // --> we want to screen to keep refreshing after there is a winner
     timers.push(jarShakesInterval)
 })
