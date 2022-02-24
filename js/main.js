@@ -46,6 +46,17 @@ difficultySettings(difficulty)
 
 //globals for items on the screen that will need to be referenced
 const glassJar = document.getElementById('canvasGlassJar')
+const divToastEat = document.getElementById('divToastEat')
+const divToastSleep = document.getElementById('divToastSleep')
+
+// toast variables with delays
+const toastEat = new bootstrap.Toast(divToastEat, {
+    delay: 1500
+})
+
+const toastSleep = new bootstrap.Toast(divToastSleep, {
+    delay: 1500
+})
 
 // we need to get the game's context, which will allows to specify where to put things
 // and how big to make them
@@ -76,12 +87,16 @@ class interactiveElement {
             this.width += this.eatingIncrementer
             this.foodsEaten += eatingIncrementer
             console.log('foods eaten, ', this.foodsEaten)
+            toastEat.show()
         }
         this.sleepIncrementer = sleepIncrementer
         this.increaseSleepPoints = function () {
             this.opacity += this.sleepIncrementer
             this.color = `rgba(35, 224, 72, ${this.opacity})`
-            if(this.speed < maxSpeed) this.speed += this.sleepIncrementer*10;
+            if(this.speed < maxSpeed) {
+                this.speed += this.sleepIncrementer*10;
+                toastSleep.show()
+            }
         }
         this.sleepDecrementer = sleepDecrementer
         this.drainSleepSpeed = function () {
@@ -162,6 +177,7 @@ const eatIndicator = () => {
         ){
             caterpillar.increaseEatPoints()
             foods.splice(i,1)
+            divToastEat.toast('show')
         }
     }
 }
@@ -200,8 +216,6 @@ const screenRefresh = () => {
     checkWinner()
 }
 
-
-
 const timers = []
 
 //add event listeners
@@ -215,4 +229,5 @@ document.addEventListener('DOMContentLoaded', function() {
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
     timers.push(screenRefreshInterval)
+
 })
