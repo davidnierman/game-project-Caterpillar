@@ -237,6 +237,7 @@ const drainSleep = () => {
 // create a function that attacks (spins) the player and reduces eatingPoints
 
 const jarSpins = () => {
+    alert('uh oh, someone kicked the jar..\n HOLD ON!!')
     let startingDegrees = 0
     const rotateJar = () => {
         canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
