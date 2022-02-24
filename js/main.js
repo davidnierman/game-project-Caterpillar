@@ -111,7 +111,7 @@ class interactiveElement {
         }
         this.eatingDecrementer = eatingDecrementer,
         this.decreaseEatPoints = function(){
-            if(this.height || this.width > 5){
+            if(this.height > 5 || this.width > 5){
                 this.height -= this.eatingDecrementer
                 this.width -= this.eatingDecrementer
                 this.foodsEaten -= eatingDecrementer
