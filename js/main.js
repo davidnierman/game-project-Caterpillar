@@ -1,7 +1,7 @@
 // how much food needs to eat to win
 const fooEatenToWin = 60;
 
-// variable boolean whether or not the player has been notified that they have won
+// variable boolean whether or not the player has been notified that they have won (only occurs once)
 let winAlerted = false;
 
 //Helper function for random numbers in a set interval
@@ -142,7 +142,7 @@ const checkWinner = () => {
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
 // up=38, down=40, left=37, right=39
-const movementHandler = (e, speed=caterpillar.speed) => {
+const movementHandler = (e) => {
     let character;
     if(!checkWinner()){
         character = caterpillar
@@ -153,19 +153,19 @@ const movementHandler = (e, speed=caterpillar.speed) => {
     console.log(`character coordinates (${character.x},${character.y})`)
     switch(e.keyCode){
         case(38): //up arrow
-            character.y -= speed;
+            character.y -= character.speed;
             if(character.y <78 && character == caterpillar) character.y = 78; // the jar lid start at the y coordinate 78
             break
         case(40): // down arrow
-            character.y += speed;
+            character.y += character.speed;
             if(character.y + character.height>=canvasGlassJar.height && character == caterpillar) character.y = canvasGlassJar.height - character.height // set outside of the gameboard
             break
         case(39): // right arrow
-            character.x += speed;
+            character.x += character.speed;
             if(character.x+ character.width>= canvasGlassJar.width && character == caterpillar) character.x = canvasGlassJar.width - character.width  // set outside of the gameboard
             break
         case(37): // left arrow
-        character.x -= speed;
+        character.x -= character.speed;
             if(character.x<0 && character == caterpillar) character.x = 0   // set outside of the gameboard
             break
     }
