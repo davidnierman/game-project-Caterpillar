@@ -69,7 +69,7 @@ class InteractiveElement {
         this.foodsEaten = 0;
         this.speed = speed;
         this.randomMovement = {
-            direction:Math.floor(Math.random() * 3), // 4 options for direction, but array starts with 0 so 0-3
+            direction:Math.floor(Math.random() * 4), // 4 options for directions
             speed: 2 
         }
         this.render = function() {
@@ -145,9 +145,9 @@ class InteractiveElement {
                 break
             case('left'):
                 this.x -= this.randomMovement.speed;;
-                if(this.x<0 && this == caterpillar){
+                if(this.x<0){
                     this.x = 0
-                    this.randomMovement.direction = 3 // if you hit the wall turn around
+                    this.randomMovement.direction = 1 // if you hit the wall turn around
                 } 
                 break 
         }
