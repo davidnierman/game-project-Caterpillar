@@ -1,11 +1,4 @@
-// how much food needs to eat to win
-const fooEatenToWin = 60;
-
-// variable boolean whether or not the player has been notified that they have won (only occurs once)
-let winAlerted = false;
-
 //Helper function for random numbers in a set interval
-//create a function for random number that has a min and max
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
     max = Math.floor(max);
@@ -47,6 +40,7 @@ const difficultySettings = difficultyLevels[difficultyRequest]
 const canvasGlassJar = document.getElementById('canvasGlassJar')
 const divToastEat = document.getElementById('divToastEat')
 const divToastSleep = document.getElementById('divToastSleep')
+
 //images for gameboard aka jar
 const caterpillarImage = document.getElementById('caterpillarImage')
 const antImage = document.getElementById('antImage')
@@ -63,7 +57,6 @@ const toastSleep = new bootstrap.Toast(divToastSleep, {
 })
 
 // we need to get the game's context, which will allows to specify where to put things
-// and how big to make them
 const ctx = canvasGlassJar.getContext('2d')
 
 //create a class that will be used to create interactive elements on the screen
@@ -130,7 +123,6 @@ let caterpillar = new InteractiveElement(450,375,25,25, 5,'rgba(212, 254, 0, 1)'
 let bed = new InteractiveElement(400,350,100,150, 0,'rgba(255, 255, 255, 0)',cacoonImage)
 let butterfly = new InteractiveElement(250,250,100,100, 25,'rgba(255, 255, 255, 0)',butterflyImage)
 
-
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
 // up=38, down=40, left=37, right=39
@@ -171,8 +163,8 @@ const createFood = () => {
     let numberOfFoods = getRandomIntInclusive(1,10);
     foods = []
     for(let i = 0; i < numberOfFoods; i++) {
-    let foodX = Math.floor(Math.random() * 500); // trying to keep food outside of the bed
-    let foodY = getRandomIntInclusive(78,500); // trying to keep food outside of the bed
+    let foodX = Math.floor(Math.random() * 500);
+    let foodY = getRandomIntInclusive(78,500); //keeping the food within in the jar. the top starts at 78
     let foodWidth = 20;
     let foodHeight = 20;
     let food = new InteractiveElement(foodX,foodY,foodWidth,foodHeight, 0,'rgba(255, 255, 255, 0)',antImage)
@@ -194,6 +186,9 @@ const eatIndicator = () => {
         }
     }
 }
+
+// how much food needs to eat to win
+const fooEatenToWin = 60;
 
 const checkWinner = () => {
     if(caterpillar.foodsEaten >= fooEatenToWin){ // need this and to avoid endless loop
@@ -226,6 +221,9 @@ const jarSpins = () => {
     caterpillar.decreaseEatPoints()
 }
 
+// variable boolean whether or not the player has been notified that they have won (only occurs once)
+let winAlerted = false;
+
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
@@ -247,7 +245,7 @@ const screenRefresh = () => {
         butterfly.render()
     }
 }
-
+//holds timer functions and allows for a loop later to end the timers
 const timers = []
 
 //add event listeners
