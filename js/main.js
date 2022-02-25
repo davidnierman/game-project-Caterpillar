@@ -20,7 +20,7 @@ class Difficulty {
 }
 
 // create difficulty levels instances
-const easy = new Difficulty(14,4,3,5,0.03,0.1,25*1000,30*1000)
+const easy = new Difficulty(14,4,3,5,0.03,0.1,25*1000,20*1000)
 const medium = new Difficulty(12,3,2,10,0.02,0.02,20*1000,20*1000)
 const hard = new Difficulty(10,2,1,20,0.01,0.01,15*1000,20*1000)
 
@@ -69,7 +69,7 @@ class InteractiveElement {
         this.foodsEaten = 0;
         this.speed = speed;
         this.randomMovement = {
-            direction:Math.floor(Math.random() * 4), // 4 options for direction
+            direction:Math.floor(Math.random() * 3), // 4 options for direction, but array starts with 0 so 0-3
             speed: 2 
         }
         this.render = function() {
@@ -118,29 +118,37 @@ class InteractiveElement {
         }
         //create a function that will randomly move a character
         this.randomMove = function () {
-            const directions = ['up','rigt','down','left']
+            const directions = ['up','right','down','left']
             console.log(`this is the direciton of food${this}`)
             let direction = directions[this.randomMovement.direction]
             switch(direction){
             case('up'):
                 this.y -= this.randomMovement.speed;
-                if(this.y <78) this.y = 78; // the jar lid start at the y coordinate 78
+                if(this.y <78) {
+                    this.y = 78; // the jar lid start at the y coordinate 78
+                    this.randomMovement.direction = 2 // if you hit the wall turn around
+                }
                 break
             case('right'):
                 this.x += this.randomMovement.speed;;
                 if(this.x + this.width>= canvasGlassJar.width) {
-                    this.x = canvasGlassJar.width - this.width  
+                    this.x = canvasGlassJar.width - this.width 
+                    this.randomMovement.direction = 3 // if you hit the wall turn around 
                 }
                 break   
             case('down'):
                 this.y += this.randomMovement.speed;;
                 if(this.y + this.height>=canvasGlassJar.height){
                     this.y = canvasGlassJar.height - this.height
+                    this.randomMovement.direction = 0 // if you hit the wall turn around
                 }
                 break
             case('left'):
                 this.x -= this.randomMovement.speed;;
-                if(this.x<0 && this == caterpillar) this.x = 0
+                if(this.x<0 && this == caterpillar){
+                    this.x = 0
+                    this.randomMovement.direction = 3 // if you hit the wall turn around
+                } 
                 break 
         }
         }
@@ -284,7 +292,7 @@ const timers = []
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler,)
     //create Timers
-    const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
+    const createFoodInterval = setInterval(createFood, getRandomIntInclusive(5000,10000))
     const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
