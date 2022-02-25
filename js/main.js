@@ -68,6 +68,10 @@ class InteractiveElement {
         this.opacity = opacity,
         this.foodsEaten = 0;
         this.speed = speed;
+        this.randomMovement = {
+            direction:Math.floor(Math.random() * 4), // 4 options for direction
+            speed: 2 
+        }
         this.render = function() {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y,this.width, this.height)
@@ -111,6 +115,34 @@ class InteractiveElement {
             if(this.speed>difficultySettings.minSpeed) {
                 this.speed -= difficultySettings.sleepDecr*10;
             }
+        }
+        //create a function that will randomly move a character
+        this.randomMove = function () {
+            const directions = ['up','rigt','down','left']
+            console.log(`this is the direciton of food${this}`)
+            let direction = directions[this.randomMovement.direction]
+            switch(direction){
+            case('up'):
+                this.y -= this.randomMovement.speed;
+                if(this.y <78) this.y = 78; // the jar lid start at the y coordinate 78
+                break
+            case('right'):
+                this.x += this.randomMovement.speed;;
+                if(this.x + this.width>= canvasGlassJar.width) {
+                    this.x = canvasGlassJar.width - this.width  
+                }
+                break   
+            case('down'):
+                this.y += this.randomMovement.speed;;
+                if(this.y + this.height>=canvasGlassJar.height){
+                    this.y = canvasGlassJar.height - this.height
+                }
+                break
+            case('left'):
+                this.x -= this.randomMovement.speed;;
+                if(this.x<0 && this == caterpillar) this.x = 0
+                break 
+        }
         }
     }
 }
@@ -168,6 +200,8 @@ const createFood = () => {
     foods.push(food)
     }
 }
+
+
 
 // create a function that indicates when the Caterpillar eats the food
 const eatIndicator = () => {
@@ -230,6 +264,7 @@ const screenRefresh = () => {
         bed.render()
         caterpillar.render()
         sleepIndicator()
+        foods.forEach(element => element.randomMove())
         foods.forEach(element => element.render())
         eatIndicator()
     }
