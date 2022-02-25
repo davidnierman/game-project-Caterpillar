@@ -264,14 +264,27 @@ const jarSpins = () => {
     caterpillar.decreaseEatPoints()
 }
 
-const changeBackgroundLight = () =>{
-    const fadeLight = () =>{
-        body.filter = 'brightness(0.2)'
-        console.log('body with filter', body)
+// variables to help move through the forrestBackground photos and turn it around
+let backgroundImageCounter = 0
+let lighter = true
+const changeBackgroundPhoto = () =>{
+        console.log(`changing background to be lighter?${lighter}`)
+        console.log('what image are we on: ', backgroundImageCounter)
+        let imageUrl = `url(../img/forrestBackground/forrestBackground${backgroundImageCounter}.jpeg)`
+        console.log('background image url, ', imageUrl)
+        document.body.style.backgroundImage = `url(img/forrestBackground/forrestBackground${backgroundImageCounter}.jpeg)`;
+        if (backgroundImageCounter === 9) lighter = false // when it hits the last picture turn the array around
+        if (backgroundImageCounter === 0) lighter = true // when it his the first picture turn the array around
+        if(lighter){
+            console.log('lighter', backgroundImageCounter)
+            backgroundImageCounter ++
+        }
+        else{
+            console.log('darker', backgroundImageCounter)
+            backgroundImageCounter --
+        }
     }
-    fadeLight()
-}
-changeBackgroundLight()
+
 
 // variable boolean whether or not the player has been notified that they have won (only occurs once)
 let winAlerted = false;
@@ -310,6 +323,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
+    const changeBackgroundPhotoInterval = setInterval(changeBackgroundPhoto, 1500)
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
