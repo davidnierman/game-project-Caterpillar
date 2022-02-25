@@ -329,4 +329,10 @@ document.addEventListener('DOMContentLoaded', function() {
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
     timers.push(jarShakesInterval)
+
+
+    // TESTING TESTING TESTING TESTING <------------------LEFT OFF HERE -------------------->
+    var myModal = new bootstrap.Modal(document.getElementById('myModal'))
+    myModal.show()
+
 })
