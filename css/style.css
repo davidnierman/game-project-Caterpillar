@@ -6,10 +6,9 @@ html {
    width: 100%;
 }
 
-
  body {
    overflow: hidden;
-   background-image: url(../img/forrestBackground.jpeg);
+   background-image: url(../img/forrestBackground/forrestBackground0.jpeg);
    background-size: cover;
    height: 100%;
    display: flex;
@@ -17,7 +16,7 @@ html {
    justify-content:flex-start;
    gap: 10px, 10px;
    flex-direction: row;
-} 
+}
 
 #canvasGlassJar {
     background-image:  url(../img/glassJar.png);

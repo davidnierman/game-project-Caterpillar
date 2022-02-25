@@ -34,6 +34,7 @@ const difficultyRequest = 0; // setting this easy for now
 const difficultySettings = difficultyLevels[difficultyRequest]
 
 //globals for items on the screen that will need to be referenced
+const body = document.getElementsByTagName('body')
 const canvasGlassJar = document.getElementById('canvasGlassJar')
 const divToastEat = document.getElementById('divToastEat')
 const divToastSleep = document.getElementById('divToastSleep')
@@ -256,13 +257,21 @@ const jarSpins = () => {
     alert('uh oh, someone kicked the jar..\n HOLD ON!!')
     let startingDegrees = 0
     const rotateJar = () => {
-        canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
-        //ctx.rotate() <--- this is not working for some reason
+        canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;        
     }
     const rotateJarInterval = setInterval(rotateJar,500)
     setTimeout(clearInterval,2000, rotateJarInterval)
     caterpillar.decreaseEatPoints()
 }
+
+const changeBackgroundLight = () =>{
+    const fadeLight = () =>{
+        body.filter = 'brightness(0.2)'
+        console.log('body with filter', body)
+    }
+    fadeLight()
+}
+changeBackgroundLight()
 
 // variable boolean whether or not the player has been notified that they have won (only occurs once)
 let winAlerted = false;
