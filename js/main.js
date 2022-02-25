@@ -68,7 +68,7 @@ const ctx = canvasGlassJar.getContext('2d')
 
 //create a class that will be used to create interactive elements on the screen
 class InteractiveElement {
-    constructor(x, y, width, height, color, image, opacity=1) {
+    constructor(x, y, width, height,speed, color, image, opacity=1) {
         this.x = x,
         this.y = y,
         this.width = width,
@@ -77,7 +77,7 @@ class InteractiveElement {
         this.image = image,
         this.opacity = opacity,
         this.foodsEaten = 0;
-        this.speed = 5;
+        this.speed = speed;
         this.render = function() {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y,this.width, this.height)
@@ -126,18 +126,10 @@ class InteractiveElement {
 }
 
 // create Caterpillar & Bed
-let caterpillar = new InteractiveElement(450,375,25,25,'rgba(212, 254, 0, 1)',caterpillarImage,)
-let bed = new InteractiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoonImage)
-let butterfly = new InteractiveElement(250,250,100,100,'rgba(255, 255, 255, 0)',butterflyImage)
+let caterpillar = new InteractiveElement(450,375,25,25, 5,'rgba(212, 254, 0, 1)',caterpillarImage,)
+let bed = new InteractiveElement(400,350,100,150, 0,'rgba(255, 255, 255, 0)',cacoonImage)
+let butterfly = new InteractiveElement(250,250,100,100, 25,'rgba(255, 255, 255, 0)',butterflyImage)
 
-
-const checkWinner = () => {
-    if(caterpillar.foodsEaten >= fooEatenToWin){ // need this and to avoid endless loop
-        timers.forEach(timer => clearInterval(timer)) // stop game play except for screen refresh
-        return true
-    }
-    return false
-}
 
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
@@ -154,7 +146,7 @@ const movementHandler = (e) => {
     switch(e.keyCode){
         case(38): //up arrow
             character.y -= character.speed;
-            if(character.y <78 && character == caterpillar) character.y = 78; // the jar lid start at the y coordinate 78
+            if(character.y <78) character.y = 78; // the jar lid start at the y coordinate 78
             break
         case(40): // down arrow
             character.y += character.speed;
@@ -183,7 +175,7 @@ const createFood = () => {
     let foodY = getRandomIntInclusive(78,500); // trying to keep food outside of the bed
     let foodWidth = 20;
     let foodHeight = 20;
-    let food = new InteractiveElement(foodX,foodY,foodWidth,foodHeight,'rgba(255, 255, 255, 0)',antImage)
+    let food = new InteractiveElement(foodX,foodY,foodWidth,foodHeight, 0,'rgba(255, 255, 255, 0)',antImage)
     foods.push(food)
     }
 }
@@ -203,6 +195,15 @@ const eatIndicator = () => {
     }
 }
 
+const checkWinner = () => {
+    if(caterpillar.foodsEaten >= fooEatenToWin){ // need this and to avoid endless loop
+        timers.forEach(timer => clearInterval(timer)) // stop game play except for screen refresh
+        return true
+    }
+    return false
+}
+
+
 const sleepIndicator = () => {
     if (caterpillar.x > bed.x 
         && caterpillar.x + caterpillar.width < bed.x + bed.width
@@ -213,12 +214,7 @@ const sleepIndicator = () => {
     }
 }
 
-const drainSleep = () => {
-    caterpillar.decreaseSleepPoints()
-}
-
 // create a function that attacks (spins) the player and reduces eatingPoints
-
 const jarSpins = () => {
     alert('uh oh, someone kicked the jar..\n HOLD ON!!')
     let startingDegrees = 0
@@ -229,7 +225,6 @@ const jarSpins = () => {
     setTimeout(clearInterval,2000, rotateJarInterval)
     caterpillar.decreaseEatPoints()
 }
-
 
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
@@ -260,12 +255,11 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler,)
     //create Timers
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
-    const drainSleepInterval =  setInterval(drainSleep, 2000)
+    const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRandomIntervalMin, difficultySettings.jarSpinRandomIntervalMax))
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
-    //timers.push(screenRefreshInterval) // --> we want to screen to keep refreshing after there is a winner
     timers.push(jarShakesInterval)
 })
