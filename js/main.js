@@ -56,6 +56,9 @@ const toastSleep = new bootstrap.Toast(divToastSleep, {
 // we need to get the game's context, which will allows to specify where to put things
 const ctx = canvasGlassJar.getContext('2d')
 
+// array to push instances of the 'InteractiveElement' below
+const interativeElementInstlist = []
+
 //create a class that will be used to create interactive elements on the screen
 class InteractiveElement {
     constructor(x, y, width, height,speed, color, image, opacity=1) {
@@ -66,8 +69,9 @@ class InteractiveElement {
         this.color = color,
         this.image = image,
         this.opacity = opacity,
-        this.foodsEaten = 0;
-        this.speed = speed;
+        this.foodsEaten = 0,
+        this.speed = speed,
+        this.this = interativeElementInstlist.push(this)
         this.randomMovement = {
             direction:Math.floor(Math.random() * 4), // 4 options for directions
             speed: 2 
@@ -93,7 +97,7 @@ class InteractiveElement {
                 this.height -= difficultySettings.eatingDecr
                 this.width -= difficultySettings.eatingDecr
                 this.foodsEaten -= difficultySettings.eatingDecr
-                console.log('caterpillar should be shrinking', caterpillar)
+
             }
             //toastEat.show() --> change this to a notification to "oh no you have been hit! or your life has been turned upside down!"
         }
@@ -119,7 +123,7 @@ class InteractiveElement {
         //create a function that will randomly move a character
         this.randomMove = function () {
             const directions = ['up','right','down','left']
-            console.log(`this is the direciton of food${this}`)
+
             let direction = directions[this.randomMovement.direction]
             switch(direction){
             case('up'):
@@ -150,8 +154,8 @@ class InteractiveElement {
                     this.randomMovement.direction = 1 // if you hit the wall turn around
                 } 
                 break 
-        }
-        }
+            }      
+        }   
     }
 }
 
@@ -221,7 +225,7 @@ const eatIndicator = () => {
         ){
             caterpillar.increaseEatPoints()
             foods.splice(i,1)
-            divToastEat.toast('show')
+            toastEat.show()
         }
     }
 }
@@ -236,7 +240,6 @@ const checkWinner = () => {
     }
     return false
 }
-
 
 const sleepIndicator = () => {
     if (caterpillar.x > bed.x 
@@ -254,6 +257,7 @@ const jarSpins = () => {
     let startingDegrees = 0
     const rotateJar = () => {
         canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
+        //ctx.rotate() <--- this is not working for some reason
     }
     const rotateJarInterval = setInterval(rotateJar,500)
     setTimeout(clearInterval,2000, rotateJarInterval)
@@ -292,6 +296,7 @@ const timers = []
 document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', movementHandler,)
     //create Timers
+    createFood()
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(5000,10000))
     const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
