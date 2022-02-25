@@ -6,19 +6,16 @@ function getRandomIntInclusive(min, max) {
   }
 
 class Difficulty {
-    constructor (maxSpeed, minSpeed,
-                 eatingIncrementer, eatingDecrementer,
-                sleepIncrementer, sleepDecrementer,
-                jarSpinRandomIntervalMin, jarSpinRandomIntervalMax)
+    constructor (maxSpeed, minSpeed, eatIncr, eatingDecr, sleepIncr, sleepDecr, jarSpinRdmIntMin, jarSpinRdmIntMax)
     {
         this.maxSpeed  = maxSpeed
         this.minSpeed = minSpeed
-        this.eatingIncrementer = eatingIncrementer
-        this.eatingDecrementer = eatingDecrementer
-        this.sleepIncrementer = sleepIncrementer
-        this.sleepDecrementer = sleepDecrementer
-        this.jarSpinRandomIntervalMin = jarSpinRandomIntervalMin
-        this.jarSpinRandomIntervalMax = jarSpinRandomIntervalMax
+        this.eatingIncr = eatIncr
+        this.eatingDecr = eatingDecr
+        this.sleepIncr = sleepIncr
+        this.sleepDecr = sleepDecr
+        this.jarSpinRdmIntMin = jarSpinRdmIntMin
+        this.jarSpinRdmIntMax = jarSpinRdmIntMax
     }
 }
 
@@ -82,37 +79,37 @@ class InteractiveElement {
             ctx.drawImage(this.image,this.x,this.y,this.width, this.height)
         }
         this.increaseEatPoints = function () {
-            this.height += difficultySettings.eatingIncrementer
-            this.width += difficultySettings.eatingIncrementer
-            this.foodsEaten += difficultySettings.eatingIncrementer
+            this.height += difficultySettings.eatingIncr
+            this.width += difficultySettings.eatingIncr
+            this.foodsEaten += difficultySettings.eatingIncr
             toastEat.Settings
         }
         this.decreaseEatPoints = function(){
             if(this.height > 5 || this.width > 5){
-                this.height -= difficultySettings.eatingDecrementer
-                this.width -= difficultySettings.eatingDecrementer
-                this.foodsEaten -= difficultySettings.eatingDecrementer
+                this.height -= difficultySettings.eatingDecr
+                this.width -= difficultySettings.eatingDecr
+                this.foodsEaten -= difficultySettings.eatingDecr
                 console.log('caterpillar should be shrinking', caterpillar)
             }
             //toastEat.show() --> change this to a notification to "oh no you have been hit! or your life has been turned upside down!"
         }
         this.increaseSleepPoints = function () {
             if(this.opacity < 1){
-                this.opacity += difficultySettings.sleepIncrementer
+                this.opacity += difficultySettings.sleepIncr
                 this.color = `rgba(212, 254, 0, ${this.opacity})`
             }
             if(this.speed < difficultySettings.maxSpeed) {
-                this.speed += difficultySettings.sleepIncrementer*10;
+                this.speed += difficultySettings.sleepIncr*10;
                 toastSleep.show()
             }
         }
         this.decreaseSleepPoints = function () {
             if(this.opacity >0.20){
-                this.opacity -= difficultySettings.sleepDecrementer
+                this.opacity -= difficultySettings.sleepDecr
                 this.color = `rgba(212, 254, 0, ${this.opacity})`
             }
             if(this.speed>difficultySettings.minSpeed) {
-                this.speed -= difficultySettings.sleepDecrementer*10;
+                this.speed -= difficultySettings.sleepDecr*10;
             }
         }
     }
@@ -254,7 +251,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //create Timers
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
     const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
-    const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRandomIntervalMin, difficultySettings.jarSpinRandomIntervalMax))
+    const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
