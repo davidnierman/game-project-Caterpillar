@@ -1,23 +1,8 @@
-// variable to hold difficulty level
-const difficultyLevels = ['easy', 'medium', 'hard']
-
 // how much food needs to eat to win
 const fooEatenToWin = 60;
 
 // variable boolean whether or not the player has been notified that they have won
 let winAlerted = false;
-
-//manually set difficuly level for now
-const difficulty = difficultyLevels[0] // setting this to easy for now
-
-// variables that can be modified to change game difficulty
-let maxSpeed;
-let minSpeed;
-let eatingIncrementer;
-let sleepIncrementer;
-let sleepDecrementer;
-let jarSpinRandomIntervalMin;
-let jarSpinRandomIntervalMax;
 
 //Helper function for random numbers in a set interval
 //create a function for random number that has a min and max
@@ -27,44 +12,36 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-// create case staement based on difficuly level
-const difficultySettings = (difficulty) => {
-    switch(difficulty){
-        case('easy'):
-            maxSpeed  = 14
-            minSpeed = 4
-            eatingIncrementer = 3
-            eatingDecrementer = 5
-            sleepIncrementer = .03
-            sleepDecrementer = .1
-            jarSpinRandomIntervalMin = 25*1000
-            jarSpinRandomIntervalMax = 30*1000
-            break
-        case('medium'):
-            maxSpeed  = 12
-            minSpeed = 3
-            eatingIncrementer = 2
-            eatingDecrementer = 10
-            sleepIncrementer = .02
-            sleepDecrementer = .02
-            jarSpinRandomIntervalMin = 20*1000
-            jarSpinRandomIntervalMax = 25*1000
-            break
-        case('hard'):
-            maxSpeed  = 10
-            minSpeed = 2
-            eatingIncrementer = 1
-            eatingDecrementer = 20
-            sleepIncrementer = .01
-            sleepDecrementer = .01
-            jarSpinRandomIntervalMin = 15*1000
-            jarSpinRandomIntervalMax = 20*1000
-            break
+class Difficulty {
+    constructor (maxSpeed, minSpeed,
+                 eatingIncrementer, eatingDecrementer,
+                sleepIncrementer, sleepDecrementer,
+                jarSpinRandomIntervalMin, jarSpinRandomIntervalMax)
+    {
+        this.maxSpeed  = maxSpeed
+        this.minSpeed = minSpeed
+        this.eatingIncrementer = eatingIncrementer
+        this.eatingDecrementer = eatingDecrementer
+        this.sleepIncrementer = sleepIncrementer
+        this.sleepDecrementer = sleepDecrementer
+        this.jarSpinRandomIntervalMin = jarSpinRandomIntervalMin
+        this.jarSpinRandomIntervalMax = jarSpinRandomIntervalMax
     }
 }
 
-//setting the difficulty level
-difficultySettings(difficulty)
+// create difficulty levels instances
+const easy = new Difficulty(14,4,3,5,0.03,0.1,25*1000,30*1000)
+const medium = new Difficulty(12,3,2,10,0.02,0.02,20*1000,20*1000)
+const hard = new Difficulty(10,2,1,20,0.01,0.01,15*1000,20*1000)
+
+// variable to hold difficulty level instances
+const difficultyLevels = [easy, medium, hard]
+
+//manually set difficuly level for now
+const difficultyRequest = 0; // setting this easy for now 
+
+// create case staement based on difficuly level
+const difficultySettings = difficultyLevels[difficultyRequest]
 
 //globals for items on the screen that will need to be referenced
 const canvasGlassJar = document.getElementById('canvasGlassJar')
@@ -90,7 +67,7 @@ const toastSleep = new bootstrap.Toast(divToastSleep, {
 const ctx = canvasGlassJar.getContext('2d')
 
 //create a class that will be used to create interactive elements on the screen
-class interactiveElement {
+class InteractiveElement {
     constructor(x, y, width, height, color, image, opacity=1) {
         this.x = x,
         this.y = y,
@@ -100,7 +77,7 @@ class interactiveElement {
         this.image = image,
         this.opacity = opacity,
         this.foodsEaten = 0;
-        this.speed = maxSpeed;
+        this.speed = 5;
         this.render = function() {
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y,this.width, this.height)
@@ -111,60 +88,47 @@ class interactiveElement {
             // will be replacing this with an image --> https://developer.mozilla.org/en-US/docs/Web/API/CanvasRenderingContext2D/drawImage
             ctx.drawImage(this.image,this.x,this.y,this.width, this.height)
         }
-        this.eatingIncrementer = eatingIncrementer,
         this.increaseEatPoints = function () {
-            this.height += this.eatingIncrementer
-            this.width += this.eatingIncrementer
-            this.foodsEaten += eatingIncrementer
-            toastEat.show()
+            this.height += difficultySettings.eatingIncrementer
+            this.width += difficultySettings.eatingIncrementer
+            this.foodsEaten += difficultySettings.eatingIncrementer
+            toastEat.Settings
         }
-        this.eatingDecrementer = eatingDecrementer,
         this.decreaseEatPoints = function(){
             if(this.height > 5 || this.width > 5){
-                this.height -= this.eatingDecrementer
-                this.width -= this.eatingDecrementer
-                this.foodsEaten -= eatingDecrementer
+                this.height -= difficultySettings.eatingDecrementer
+                this.width -= difficultySettings.eatingDecrementer
+                this.foodsEaten -= difficultySettings.eatingDecrementer
                 console.log('caterpillar should be shrinking', caterpillar)
             }
             //toastEat.show() --> change this to a notification to "oh no you have been hit! or your life has been turned upside down!"
         }
-        this.sleepIncrementer = sleepIncrementer
         this.increaseSleepPoints = function () {
             if(this.opacity < 1){
-                this.opacity += this.sleepIncrementer
+                this.opacity += difficultySettings.sleepIncrementer
                 this.color = `rgba(212, 254, 0, ${this.opacity})`
-                console.log('current opacity,', this.opacity)
             }
-            if(this.speed < maxSpeed) {
-                this.speed += this.sleepIncrementer*10;
+            if(this.speed < difficultySettings.maxSpeed) {
+                this.speed += difficultySettings.sleepIncrementer*10;
                 toastSleep.show()
             }
         }
-        this.sleepDecrementer = sleepDecrementer
         this.decreaseSleepPoints = function () {
             if(this.opacity >0.20){
-                this.opacity -= this.sleepDecrementer
+                this.opacity -= difficultySettings.sleepDecrementer
                 this.color = `rgba(212, 254, 0, ${this.opacity})`
-                console.log('current opacity,', this.opacity)
             }
-            if(this.speed>minSpeed) {
-                this.speed -= this.sleepDecrementer*10;
+            if(this.speed>difficultySettings.minSpeed) {
+                this.speed -= difficultySettings.sleepDecrementer*10;
             }
         }
-        // //work on this later to make more fluid movement
-        // this.direction = {
-        //     up: false,
-        //     down: false,
-        //     right: false,
-        //     left: false
-        // }
     }
 }
 
 // create Caterpillar & Bed
-let caterpillar = new interactiveElement(450,375,25,25,'rgba(212, 254, 0, 1)',caterpillarImage,)
-let bed = new interactiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoonImage)
-let butterfly = new interactiveElement(250,250,100,100,'rgba(255, 255, 255, 0)',butterflyImage)
+let caterpillar = new InteractiveElement(450,375,25,25,'rgba(212, 254, 0, 1)',caterpillarImage,)
+let bed = new InteractiveElement(400,350,100,150,'rgba(255, 255, 255, 0)',cacoonImage)
+let butterfly = new InteractiveElement(250,250,100,100,'rgba(255, 255, 255, 0)',butterflyImage)
 
 
 const checkWinner = () => {
@@ -179,15 +143,11 @@ const checkWinner = () => {
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
 // up=38, down=40, left=37, right=39
 const movementHandler = (e, speed=caterpillar.speed) => {
-    //console.log('arrow click event received, ', e.keyCode)
     let character;
-    console.log('checkWinner value: ', checkWinner())
     if(!checkWinner()){
-        console.log ('caterpillar object', caterpillar)
         character = caterpillar
     }
     else{
-        console.log('butterfly object', butterfly)
         character = butterfly
     }
     console.log(`character coordinates (${character.x},${character.y})`)
@@ -209,7 +169,6 @@ const movementHandler = (e, speed=caterpillar.speed) => {
             if(character.x<0 && character == caterpillar) character.x = 0   // set outside of the gameboard
             break
     }
-    
 }
 
 // create a list of food instances
@@ -224,7 +183,7 @@ const createFood = () => {
     let foodY = getRandomIntInclusive(78,500); // trying to keep food outside of the bed
     let foodWidth = 20;
     let foodHeight = 20;
-    let food = new interactiveElement(foodX,foodY,foodWidth,foodHeight,'rgba(255, 255, 255, 0)',antImage)
+    let food = new InteractiveElement(foodX,foodY,foodWidth,foodHeight,'rgba(255, 255, 255, 0)',antImage)
     foods.push(food)
     }
 }
@@ -267,7 +226,6 @@ const jarSpins = () => {
         canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;
     }
     const rotateJarInterval = setInterval(rotateJar,500)
-    //var timeoutID = setTimeout(function[, delay, arg1, arg2, ...]);
     setTimeout(clearInterval,2000, rotateJarInterval)
     caterpillar.decreaseEatPoints()
 }
@@ -276,7 +234,6 @@ const jarSpins = () => {
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
-    console.log('did we win??? ', checkWinner())
     if(!checkWinner()){
         ctx.clearRect(0,0,500,500)
         checkWinner()
@@ -288,7 +245,6 @@ const screenRefresh = () => {
     }
     else {
         ctx.clearRect(0,0,500,500)
-        console.log('winAlerted value, ', winAlerted)
         if(!winAlerted){
             winAlerted = true
             alert("you've won it's time to fly away!")
@@ -305,7 +261,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //create Timers
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(2000,5000))
     const drainSleepInterval =  setInterval(drainSleep, 2000)
-    const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(jarSpinRandomIntervalMin, jarSpinRandomIntervalMax))
+    const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRandomIntervalMin, difficultySettings.jarSpinRandomIntervalMax))
     const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
