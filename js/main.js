@@ -322,8 +322,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const createFoodInterval = setInterval(createFood, getRandomIntInclusive(5000,10000))
     const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
-    const screenRefreshInterval = setInterval(screenRefresh, 50) // refresh screen every 50 ms
-    const changeBackgroundPhotoInterval = setInterval(changeBackgroundPhoto, 1500)
+    // these are never ending intervals and therefore do not need a variable to set timeout
+    setInterval(screenRefresh, 40) // refresh screen every 50 ms
+    setInterval(changeBackgroundPhoto, 3000)
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
