@@ -10,6 +10,7 @@
         <link rel = "stylesheet" href = "css/style.css">
     </head>
     <body>
+        <img src='img/forrestBackground/forrestBackground5.jpeg' alt="green" id="backgroundImage">
         <!-- Modal -->
         <div class="modal fade" id="myModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -28,54 +29,56 @@
             </div>
             </div>
         </div>
-        <!-- Create the scene aka create permanent elements -->
-        <canvas id="canvasGlassJar" class="jar" height='500px'% width='500px';></canvas>
-        <div id="toastContainer">
-            <!-- Adding a Toast Message that will be updated when specific events occur i.e. eating and sleeping -->
-            <div class="toast" id="divToastEat" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                <img src="img/donutbite-icon.png" class="rounded mr-2" alt="...">
-                <strong class="mr-auto">EatingPoints +1 </strong>
-                <small class="text-muted">just now</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+        <div id="gameContainer">
+            <!-- Create the scene aka create permanent elements -->
+            <canvas id="canvasGlassJar" class="jar" height='500px'% width='500px';></canvas>
+            <div id="toastContainer">
+                <!-- Adding a Toast Message that will be updated when specific events occur i.e. eating and sleeping -->
+                <div class="toast" id="divToastEat" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                    <img src="img/donutbite-icon.png" class="rounded mr-2" alt="...">
+                    <strong class="mr-auto">EatingPoints +1 </strong>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="toast-body">
+                        Keep up the eating to grow bigger!
+                    </div>
                 </div>
-                <div class="toast-body">
-                    Keep up the eating to grow bigger!
+                <!-- second toast message -->
+                <div class="toast" id="divToastSleep" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                    <img src="img/sleep-icon.png" class="rounded mr-2" alt="...">
+                    <strong class="mr-auto">Sleeping Points +1</strong>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="toast-body">
+                        Keep up the sleeping to recharge your batteries and go faster!
+                    </div>
                 </div>
             </div>
-            <!-- second toast message -->
-            <div class="toast" id="divToastSleep" role="alert" aria-live="assertive" aria-atomic="true">
-                <div class="toast-header">
-                <img src="img/sleep-icon.png" class="rounded mr-2" alt="...">
-                <strong class="mr-auto">Sleeping Points +1</strong>
-                <small class="text-muted">just now</small>
-                <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="toast-body">
-                    Keep up the sleeping to recharge your batteries and go faster!
-                </div>
+            <div id="author">
+                <h2>Game and Illustrations<br>by David Nierman </h2>
             </div>
+            <!-- add image here to reference late -->
+            <div style="display:none;">
+                    <img id="caterpillarImage" src="img/Caterpillar.png">
+                    <img id="antImage" src="img/ant.png">
+                    <img id="cacoonImage" src="img/cacoon.png">
+                    <img id="butterflyImage" src="img/butterfly.png">
+            </div>
+            <!-- adding bootstrap below -->
+            <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+            <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+            
+            <!-- I learend that bootstap has to go first in order for the javascript file to recognize its statements/functions etc -->
+            <script src="js/main.js"></script> 
         </div>
-        <div id="author">
-             <h2>Game and Illustrations<br>by David Nierman </h2>
-        </div>
-        <!-- add image here to reference late -->
-        <div style="display:none;">
-                <img id="caterpillarImage" src="img/caterpillar.png">
-                <img id="antImage" src="img/ant.png">
-                <img id="cacoonImage" src="img/cacoon.png">
-                <img id="butterflyImage" src="img/butterfly.png">
-          </div>
-        <!-- adding bootstrap below -->
-        <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-        
-        <!-- I learend that bootstap has to go first in order for the javascript file to recognize its statements/functions etc -->
-        <script src="js/main.js"></script> 
     </body>
 </html>

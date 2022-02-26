@@ -265,16 +265,12 @@ const jarSpins = () => {
 }
 
 // variables to help move through the forrestBackground photos and turn it around
-let backgroundImageCounter = 0
+let backgroundImageCounter = 1
 let lighter = true
 const changeBackgroundPhoto = () =>{
-        console.log(`changing background to be lighter?${lighter}`)
-        console.log('what image are we on: ', backgroundImageCounter)
-        let imageUrl = `url(../img/forrestBackground/forrestBackground${backgroundImageCounter}.jpeg)`
-        console.log('background image url, ', imageUrl)
-        document.body.style.backgroundImage = `url(img/forrestBackground/forrestBackground${backgroundImageCounter}.jpeg)`;
-        if (backgroundImageCounter === 9) lighter = false // when it hits the last picture turn the array around
-        if (backgroundImageCounter === 0) lighter = true // when it his the first picture turn the array around
+        document.getElementById('backgroundImage').style.filter = `brightness(${backgroundImageCounter}%)`
+        if (backgroundImageCounter === 100) lighter = false // when it hits the last picture turn the array around
+        if (backgroundImageCounter === 1) lighter = true // when it his the first picture turn the array around
         if(lighter){
             console.log('lighter', backgroundImageCounter)
             backgroundImageCounter ++
@@ -292,6 +288,8 @@ let winAlerted = false;
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
+    console.log('image url, ',document.body.style.backgroundImage)
+    if(document.body.style.backgroundImage == false) console.log('This is empty!!!!', document.body.style.backgroundImage)
     if(!checkWinner()){
         ctx.clearRect(0,0,500,500)
         checkWinner()
@@ -324,7 +322,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
     // these are never ending intervals and therefore do not need a variable to set timeout
     setInterval(screenRefresh, 40) // refresh screen every 50 ms
-    setInterval(changeBackgroundPhoto, 3000)
+    setInterval(changeBackgroundPhoto, 100)
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)

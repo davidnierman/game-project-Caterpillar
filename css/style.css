@@ -6,10 +6,25 @@ html {
    width: 100%;
 }
 
- body {
+body {
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+}
+#backgroundImage{
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+}
+
+ #gameContainer {
    overflow: hidden;
-   background-image: url(../img/forrestBackground/forrestBackground0.jpeg);
-   background-size: cover;
+   /* background-image: url(../img/forrestBackground/forrestBackground7.jpeg); */
+   /* background-size: cover;  */
    height: 100%;
    display: flex;
    align-items: center;
