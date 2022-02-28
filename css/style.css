@@ -54,6 +54,30 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
+.btn-primary{
+    color:black;
+}
+
+.modal-body{
+    align-self: center;
+}
+
+.modal-footer{
+    justify-content: space-evenly;
+}
+
+#easy{
+    background-color: green;
+}
+
+#medium{
+    background-color: yellow;
+}
+
+#hard{
+    background-color: red;
+}
+
 
 
 

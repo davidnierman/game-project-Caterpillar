@@ -45,8 +45,7 @@ A text from a friend:
 ## User Story
 #
 ## Opening Scene
-  - Modal will appear that says
-     -  " While in the midst of serios internal growth, respect your need to rest" - yung pueblo
+  - Modal will appear that says "You are a baby caterpillar. Eat ants to grow, sleep to gain speed and one day you will become a buttefly!"
 
 ## Game Layout     
 

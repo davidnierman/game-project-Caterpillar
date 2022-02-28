@@ -27,11 +27,16 @@ const hard = new Difficulty(10,2,1,20,0.01,0.01,15*1000,20*1000)
 // variable to hold difficulty level instances
 const difficultyLevels = [easy, medium, hard]
 
+// create references to the three buttons that the user can click to set difficulty
+const easyButton = document.getElementById('easy') // 0
+const mediumButton = document.getElementById('medium') // 1
+const hardButton = document.getElementById('hard') // 2
+
 //manually set difficuly level for now
-const difficultyRequest = 0; // setting this easy for now 
+let difficultyRequest = 0; // setting this easy for now 
 
 // create case staement based on difficuly level
-const difficultySettings = difficultyLevels[difficultyRequest]
+let difficultySettings = difficultyLevels[difficultyRequest]
 
 //globals for items on the screen that will need to be referenced
 const body = document.getElementsByTagName('body')
@@ -270,13 +275,11 @@ let lighter = true
 const changeBackgroundPhoto = () =>{
         document.getElementById('backgroundImage').style.filter = `brightness(${backgroundImageCounter}%)`
         if (backgroundImageCounter === 100) lighter = false // when it hits the last picture turn the array around
-        if (backgroundImageCounter === 1) lighter = true // when it his the first picture turn the array around
+        if (backgroundImageCounter === 10) lighter = true // when it his the first picture turn the array around
         if(lighter){
-            console.log('lighter', backgroundImageCounter)
             backgroundImageCounter ++
         }
         else{
-            console.log('darker', backgroundImageCounter)
             backgroundImageCounter --
         }
     }
@@ -288,8 +291,6 @@ let winAlerted = false;
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
     console.log('screen refreshed!')
-    console.log('image url, ',document.body.style.backgroundImage)
-    if(document.body.style.backgroundImage == false) console.log('This is empty!!!!', document.body.style.backgroundImage)
     if(!checkWinner()){
         ctx.clearRect(0,0,500,500)
         checkWinner()
@@ -314,6 +315,13 @@ const timers = []
 
 //add event listeners
 document.addEventListener('DOMContentLoaded', function() {
+    // event listeners for selecting difficulty level
+    var myModal = new bootstrap.Modal(document.getElementById('myModal'))
+    myModal.show()
+    easyButton.addEventListener('click', function() {difficultyRequest = 0; myModal.hide(); console.log('level set to easy', difficultyRequest)})
+    mediumButton.addEventListener('click', function() {difficultyRequest = 1; myModal.hide(); console.log('level set to medium', difficultyRequest)})
+    hardButton.addEventListener('click', function() {difficultyRequest = 2; myModal.hide(); console.log('level set to hard', difficultyRequest)})
+
     document.addEventListener('keydown', movementHandler,)
     //create Timers
     createFood()
@@ -322,15 +330,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
     // these are never ending intervals and therefore do not need a variable to set timeout
     setInterval(screenRefresh, 40) // refresh screen every 50 ms
-    setInterval(changeBackgroundPhoto, 100)
+    setInterval(changeBackgroundPhoto, 200)
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
     timers.push(jarShakesInterval)
-
-
-    // TESTING TESTING TESTING TESTING <------------------LEFT OFF HERE -------------------->
-    var myModal = new bootstrap.Modal(document.getElementById('myModal'))
-    myModal.show()
 
 })
