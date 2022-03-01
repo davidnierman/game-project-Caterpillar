@@ -13,6 +13,9 @@ const body = document.getElementsByTagName('body')
 const canvasGlassJar = document.getElementById('canvasGlassJar')
 const divToastEat = document.getElementById('divToastEat')
 const divToastSleep = document.getElementById('divToastSleep')
+const divToastJarSpin = document.getElementById('divToastJarSpin')
+const divToastWin = document.getElementById('divToastWin')
+
 
 //images for gameboard aka jar
 const caterpillarImage = document.getElementById('caterpillarImage')
@@ -23,6 +26,8 @@ const butterflyImage = document.getElementById('butterflyImage')
 // toast variables with delays
 const toastEat = new bootstrap.Toast(divToastEat, {delay: 1500})
 const toastSleep = new bootstrap.Toast(divToastSleep, {delay: 1500})
+const toastJarSpin = new bootstrap.Toast(divToastJarSpin, {delay: 2000})
+const toastWin  = new bootstrap.Toast(divToastWin, {delay: 10000})
 
 // we need to get the game's context, which will allows to specify where to put things
 const ctx = canvasGlassJar.getContext('2d')
@@ -40,7 +45,7 @@ let difficultySettings;
 const fooEatenToWin = 60;
 
 // variable boolean whether or not the player has been notified that they have won (only occurs once)
-let winAlertedFlag = false;
+let winMessageFlag = false;
 
 // array to push instances of the 'InteractiveElement' below --> I do not think I ended up using this and instead made a separate game loop when I no longer needed the caterpillar or food
 const interativeElementInstlist = []
@@ -282,6 +287,7 @@ const sleepIndicator = () => {
 // create a function that attacks (spins) the player and reduces eatingPoints
 const jarSpins = () => {
     //alert('uh oh, someone kicked the jar..\n HOLD ON!!') ----------------------------> going to replace with a different message
+    toastJarSpin.show()
     //console.log('jarSpins function ran')
     let startingDegrees = 0
     const rotateJar = () => {
@@ -337,9 +343,9 @@ const screenRefresh = () => {
         }
         else {
             ctx.clearRect(0,0,500,500)
-            if(!winAlertedFlag){
-                winAlertedFlag = true
-                alert("you've won it's time to fly away!")
+            if(!winMessageFlag){
+                winMessageFlag = true
+                toastWin.show()
             }
             butterfly.render()
         }
@@ -366,7 +372,7 @@ const setupGame = () => {
     //create Timers
     createFoodInterval = setInterval(createFood, getRandomIntInclusive(5000,10000))
     drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
-    //jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
+    jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
 
     // add an event listener to move the caterpillar and later the butterfly
     document.addEventListener('keydown', movementHandler)

@@ -54,7 +54,7 @@
             <!-- Create the scene aka create permanent elements -->
             <canvas id="canvasGlassJar" class="jar" height='500px'% width='500px';></canvas>
             <div id="toastContainer">
-                <!-- Adding a Toast Message that will be updated when specific events occur i.e. eating and sleeping -->
+                <!-- Eat toast message -->
                 <div class="toast" id="divToastEat" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
                     <img src="img/donutbite-icon.png" class="rounded mr-2" alt="...">
@@ -68,7 +68,7 @@
                         Keep up the eating to grow bigger!
                     </div>
                 </div>
-                <!-- second toast message -->
+                <!-- Sleep toast message -->
                 <div class="toast" id="divToastSleep" role="alert" aria-live="assertive" aria-atomic="true">
                     <div class="toast-header">
                     <img src="img/sleep-icon.png" class="rounded mr-2" alt="...">
@@ -82,7 +82,37 @@
                         Keep up the sleeping to recharge your batteries and go faster!
                     </div>
                 </div>
-            </div>
+                <!-- Jar shake toast message -->
+                <div class="toast" id="divToastJarSpin" role="alert" aria-live="assertive" aria-atomic="true">
+                    <div class="toast-header">
+                    <img src="img/sleep-icon.png" class="rounded mr-2" alt="...">
+                    <strong class="mr-auto">Jar Spin</strong>
+                    <small class="text-muted">just now</small>
+                    <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="toast-body">
+                        uh oh, someone kicked the jar..\n HOLD ON!!'
+                    </div>
+                </div>
+                </div>
+                    <!-- Win toast message -->
+                    <div class="toast" id="divToastWin" role="alert" aria-live="assertive" aria-atomic="true">
+                        <div class="toast-header">
+                        <img src="img/sleep-icon.png" class="rounded mr-2" alt="...">
+                        <strong class="mr-auto">Transformation</strong>
+                        <small class="text-muted">just now</small>
+                        <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="toast-body">
+                            you've won it's time to fly out of this jar!
+                        </div>
+                    </div>
+                </div>
+        </div>
             <div id="author">
                 <h2>Game and Illustrations<br>by David Nierman </h2>
             </div>
