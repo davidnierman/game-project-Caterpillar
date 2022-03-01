@@ -1,3 +1,4 @@
+// *********************************************************** HELPER FUNCTION FOR RANDOMIZATION *******************************************************
 //Helper function for random numbers in a set interval
 function getRandomIntInclusive(min, max) {
     min = Math.ceil(min);
@@ -5,38 +6,7 @@ function getRandomIntInclusive(min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
   }
 
-class Difficulty {
-    constructor (maxSpeed, minSpeed, eatIncr, eatingDecr, sleepIncr, sleepDecr, jarSpinRdmIntMin, jarSpinRdmIntMax)
-    {
-        this.maxSpeed  = maxSpeed
-        this.minSpeed = minSpeed
-        this.eatingIncr = eatIncr
-        this.eatingDecr = eatingDecr
-        this.sleepIncr = sleepIncr
-        this.sleepDecr = sleepDecr
-        this.jarSpinRdmIntMin = jarSpinRdmIntMin
-        this.jarSpinRdmIntMax = jarSpinRdmIntMax
-    }
-}
-
-// create difficulty levels instances
-const easy = new Difficulty(14,4,3,5,0.03,0.1,25*1000,20*1000)
-const medium = new Difficulty(12,3,2,10,0.02,0.02,20*1000,20*1000)
-const hard = new Difficulty(10,2,1,20,0.01,0.01,15*1000,20*1000)
-
-// variable to hold difficulty level instances
-const difficultyLevels = [easy, medium, hard]
-
-// create references to the three buttons that the user can click to set difficulty
-const easyButton = document.getElementById('easy') // 0
-const mediumButton = document.getElementById('medium') // 1
-const hardButton = document.getElementById('hard') // 2
-
-//manually set difficuly level for now
-let difficultyRequest = 0; // setting this easy for now 
-
-// create case staement based on difficuly level
-let difficultySettings = difficultyLevels[difficultyRequest]
+// ********************************************************************* GLOBALS ************************************************************************* 
 
 //globals for items on the screen that will need to be referenced
 const body = document.getElementsByTagName('body')
@@ -51,19 +21,44 @@ const cacoonImage = document.getElementById('cacoonImage')
 const butterflyImage = document.getElementById('butterflyImage')
 
 // toast variables with delays
-const toastEat = new bootstrap.Toast(divToastEat, {
-    delay: 1500
-})
-
-const toastSleep = new bootstrap.Toast(divToastSleep, {
-    delay: 1500
-})
+const toastEat = new bootstrap.Toast(divToastEat, {delay: 1500})
+const toastSleep = new bootstrap.Toast(divToastSleep, {delay: 1500})
 
 // we need to get the game's context, which will allows to specify where to put things
 const ctx = canvasGlassJar.getContext('2d')
 
-// array to push instances of the 'InteractiveElement' below
+// create references to the three buttons that the user can click to set difficulty
+const easyButton = document.getElementById('easy') // 0
+const mediumButton = document.getElementById('medium') // 1
+const hardButton = document.getElementById('hard') // 2
+
+//manually set difficuly level for now
+let difficultyRequest;
+let difficultySettings; 
+
+// global reference to how much food needs to eat to win
+const fooEatenToWin = 60;
+
+// variable boolean whether or not the player has been notified that they have won (only occurs once)
+let winAlertedFlag = false;
+
+// array to push instances of the 'InteractiveElement' below --> I do not think I ended up using this and instead made a separate game loop when I no longer needed the caterpillar or food
 const interativeElementInstlist = []
+
+//create global class instances
+let caterpillar;
+let bed;
+let butterfly;
+
+//create timers that will be set when difficulty is chosen
+let createFoodInterval;
+let drainSleepInterval;
+let jarShakesInterval;
+
+//holds timer functions and allows for a loop later to end the timers
+const timers = []
+
+// ********************************************************************* CLASSES ************************************************************************* 
 
 //create a class that will be used to create interactive elements on the screen
 class InteractiveElement {
@@ -80,9 +75,10 @@ class InteractiveElement {
         this.this = interativeElementInstlist.push(this)
         this.randomMovement = {
             direction:Math.floor(Math.random() * 4), // 4 options for directions
-            speed: 2 
+            speed: difficultySettings.foodSpeed
         }
         this.render = function() {
+            //console.log('render function ran', this)
             ctx.fillStyle = this.color
             ctx.fillRect(this.x, this.y,this.width, this.height)
             //ctx.strokeStyle = 'black';
@@ -93,12 +89,14 @@ class InteractiveElement {
             ctx.drawImage(this.image,this.x,this.y,this.width, this.height)
         }
         this.increaseEatPoints = function () {
+            //console.log('increaseEatPoints function ran')
             this.height += difficultySettings.eatingIncr
             this.width += difficultySettings.eatingIncr
             this.foodsEaten += difficultySettings.eatingIncr
             toastEat.Settings
         }
         this.decreaseEatPoints = function(){
+            console.log('decreaseEatPoints function ran')
             if(this.height > 5 || this.width > 5){
                 this.height -= difficultySettings.eatingDecr
                 this.width -= difficultySettings.eatingDecr
@@ -108,6 +106,7 @@ class InteractiveElement {
             //toastEat.show() --> change this to a notification to "oh no you have been hit! or your life has been turned upside down!"
         }
         this.increaseSleepPoints = function () {
+            //console.log('increaseSleepPoints function ran')
             if(this.opacity < 1){
                 this.opacity += difficultySettings.sleepIncr
                 this.color = `rgba(212, 254, 0, ${this.opacity})`
@@ -118,6 +117,7 @@ class InteractiveElement {
             }
         }
         this.decreaseSleepPoints = function () {
+            //console.log('decreaseSleepingPoints function ran')
             if(this.opacity >0.20){
                 this.opacity -= difficultySettings.sleepDecr
                 this.color = `rgba(212, 254, 0, ${this.opacity})`
@@ -165,15 +165,39 @@ class InteractiveElement {
     }
 }
 
-// create Caterpillar & Bed
-let caterpillar = new InteractiveElement(450,375,25,25, 5,'rgba(212, 254, 0, 1)',caterpillarImage,)
-let bed = new InteractiveElement(400,350,100,150, 0,'rgba(255, 255, 255, 0)',cacoonImage)
-let butterfly = new InteractiveElement(250,250,100,100, 25,'rgba(255, 255, 255, 0)',butterflyImage)
+class Difficulty {
+    constructor (maxSpeed, minSpeed, eatIncr, eatingDecr, sleepIncr, sleepDecr, jarSpinRdmIntMin, jarSpinRdmIntMax, foodSpeed)
+    {
+        this.maxSpeed  = maxSpeed
+        this.minSpeed = minSpeed
+        this.eatingIncr = eatIncr
+        this.eatingDecr = eatingDecr
+        this.sleepIncr = sleepIncr
+        this.sleepDecr = sleepDecr
+        this.jarSpinRdmIntMin = jarSpinRdmIntMin
+        this.jarSpinRdmIntMax = jarSpinRdmIntMax
+        this.foodSpeed = foodSpeed
+    }
+}
+
+//***************************************************  INSTANCES OF DIFFUCLTY  ****************************************************
+
+// create difficulty levels instances
+const easy = new Difficulty(14,4,3,5,0.03,0.1,25*1000,20*1000, 2)
+const medium = new Difficulty(12,3,2,10,0.02,0.02,20*1000,20*1000, 6)
+const hard = new Difficulty(10,2,1,20,0.01,0.01,15*1000,20*1000, 10)
+
+// variable to hold difficulty level instances
+const difficultyLevels = [easy, medium, hard]
+
+//***************************************************  LIST OF FUNCTION(S) THAT WILL RUN WHEN AN ARROW KEY IS CLICKED  ****************************************************
 
 // create function that receives a 'keydown' and moves accordingly
 // found each key's code using this website: https://www.khanacademy.org/computer-programming/keycode-database/1902917694
 // up=38, down=40, left=37, right=39
+
 const movementHandler = (e) => {
+    //console.log('movementHandler function ran')
     let character;
     if(!checkWinner()){
         character = caterpillar
@@ -181,7 +205,7 @@ const movementHandler = (e) => {
     else{
         character = butterfly
     }
-    console.log(`character coordinates (${character.x},${character.y})`)
+    //console.log(`character coordinates (${character.x},${character.y})`)
     switch(e.keyCode){
         case(38): //up arrow
             character.y -= character.speed;
@@ -202,11 +226,16 @@ const movementHandler = (e) => {
     }
 }
 
-// create a list of food instances
+//*************************************************** LIST OF FUNCTION(S) THAT WILL RUN IN GAME LOOP ****************************************************
+
+                                                        //*********** FOOD FUNCTION(S) ************
+
+// create a list of food instances that is global so it can be accessed later when food is eaten
 let foods = []
 
 // create a function that creates food
 const createFood = () => {
+    //console.log('createFood function ran')
     let numberOfFoods = getRandomIntInclusive(1,10);
     foods = []
     for(let i = 0; i < numberOfFoods; i++) {
@@ -214,15 +243,16 @@ const createFood = () => {
     let foodY = getRandomIntInclusive(78,500); //keeping the food within in the jar. the top starts at 78
     let foodWidth = 20;
     let foodHeight = 20;
-    let food = new InteractiveElement(foodX,foodY,foodWidth,foodHeight, 0,'rgba(255, 255, 255, 0)',antImage)
+    let food = new InteractiveElement(foodX,foodY,foodWidth,foodHeight,difficultySettings.foodSpeed,'rgba(255, 255, 255, 0)',antImage)
     foods.push(food)
     }
 }
 
-
+                                            //******************* CATERPILLAR INDICATOR FUNCTIONS *****************
 
 // create a function that indicates when the Caterpillar eats the food
 const eatIndicator = () => {
+    //console.log('eatIndicator function ran')
     for ( let i = 0; i < foods.length; i++){ // loop through all the foods and see if the caterpillar has touched any of them
         if (caterpillar.x < foods[i].x + foods[i].width
             && caterpillar.x + caterpillar.width > foods[i].x
@@ -236,18 +266,8 @@ const eatIndicator = () => {
     }
 }
 
-// how much food needs to eat to win
-const fooEatenToWin = 60;
-
-const checkWinner = () => {
-    if(caterpillar.foodsEaten >= fooEatenToWin){ // need this and to avoid endless loop
-        timers.forEach(timer => clearInterval(timer)) // stop game play except for screen refresh
-        return true
-    }
-    return false
-}
-
 const sleepIndicator = () => {
+    //console.log('sleepIndicator function ran')
     if (caterpillar.x > bed.x 
         && caterpillar.x + caterpillar.width < bed.x + bed.width
         && caterpillar.y > bed.y
@@ -257,9 +277,12 @@ const sleepIndicator = () => {
     }
 }
 
+                                        //************************* INTERACTIVE GAME FUNCTIONS *************************** */
+
 // create a function that attacks (spins) the player and reduces eatingPoints
 const jarSpins = () => {
-    alert('uh oh, someone kicked the jar..\n HOLD ON!!')
+    //alert('uh oh, someone kicked the jar..\n HOLD ON!!') ----------------------------> going to replace with a different message
+    //console.log('jarSpins function ran')
     let startingDegrees = 0
     const rotateJar = () => {
         canvasGlassJar.style.transform = `rotate(${startingDegrees+=90}deg)`;        
@@ -284,56 +307,93 @@ const changeBackgroundPhoto = () =>{
         }
     }
 
+                                            //***************************** CHECK WINNER *************************** */
 
-// variable boolean whether or not the player has been notified that they have won (only occurs once)
-let winAlerted = false;
+const checkWinner = () => {
+    //console.log('checking winner')
+    if (caterpillar.foodsEaten >= fooEatenToWin){ // need this and to avoid endless loop
+        timers.forEach(timer => clearInterval(timer)) // stop game play except for screen refresh
+        return true
+    }
+    return false
+    }
+
+
+//*************************************************************        MASTER GAME LOOP        ***********************************************************
 
 // create a function that refreshes the page every 50 milliseconds to reflect the movements on the screen
 const screenRefresh = () => {
-    console.log('screen refreshed!')
-    if(!checkWinner()){
-        ctx.clearRect(0,0,500,500)
-        checkWinner()
-        bed.render()
-        caterpillar.render()
-        sleepIndicator()
-        foods.forEach(element => element.randomMove())
-        foods.forEach(element => element.render())
-        eatIndicator()
-    }
-    else {
-        ctx.clearRect(0,0,500,500)
-        if(!winAlerted){
-            winAlerted = true
-            alert("you've won it's time to fly away!")
+    //console.log('screen refreshed!')
+    if(difficultyRequest !== undefined){ // to begin the game loop the game difficulty level needs to be set first
+        if(!checkWinner()){  // there are different game loops depending on if there is a winner
+            ctx.clearRect(0,0,500,500)
+            checkWinner()
+            bed.render()
+            caterpillar.render()
+            sleepIndicator()
+            foods.forEach(element => element.randomMove())
+            foods.forEach(element => element.render())
+            eatIndicator()
         }
-        butterfly.render()
+        else {
+            ctx.clearRect(0,0,500,500)
+            if(!winAlertedFlag){
+                winAlertedFlag = true
+                alert("you've won it's time to fly away!")
+            }
+            butterfly.render()
+        }
     }
 }
-//holds timer functions and allows for a loop later to end the timers
-const timers = []
 
-//add event listeners
-document.addEventListener('DOMContentLoaded', function() {
-    // event listeners for selecting difficulty level
-    var myModal = new bootstrap.Modal(document.getElementById('myModal'))
-    myModal.show()
-    easyButton.addEventListener('click', function() {difficultyRequest = 0; myModal.hide(); console.log('level set to easy', difficultyRequest)})
-    mediumButton.addEventListener('click', function() {difficultyRequest = 1; myModal.hide(); console.log('level set to medium', difficultyRequest)})
-    hardButton.addEventListener('click', function() {difficultyRequest = 2; myModal.hide(); console.log('level set to hard', difficultyRequest)})
 
-    document.addEventListener('keydown', movementHandler,)
-    //create Timers
+//********************************************* CREATING INSTANCES & TIMERS THAT  DEPEND ON DIFFICULTY LEVEL BEING SET FIRST!! ****************************************
+
+const setupGame = () => {
+    console.log('setupGame function ran')
+  
+    // create case staement based on difficuly level
+    difficultySettings = difficultyLevels[difficultyRequest]
+
+    // create Caterpillar & Bed & Butterfly
+    caterpillar = new InteractiveElement(450,375,25,25, 5,'rgba(212, 254, 0, 1)',caterpillarImage,)
+    bed = new InteractiveElement(400,350,100,150, 0,'rgba(255, 255, 255, 0)',cacoonImage)
+    butterfly = new InteractiveElement(250,250,100,100, 25,'rgba(255, 255, 255, 0)',butterflyImage)
+
+    //create food so the caterpillar is not sitting there a a while incase food does not populate immedately with random food interval
     createFood()
-    const createFoodInterval = setInterval(createFood, getRandomIntInclusive(5000,10000))
-    const drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
-    const jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
-    // these are never ending intervals and therefore do not need a variable to set timeout
-    setInterval(screenRefresh, 40) // refresh screen every 50 ms
-    setInterval(changeBackgroundPhoto, 200)
+
+    //create Timers
+    createFoodInterval = setInterval(createFood, getRandomIntInclusive(5000,10000))
+    drainSleepInterval =  setInterval(function () {caterpillar.decreaseSleepPoints()}, 2000)
+    //jarShakesInterval = setInterval(jarSpins, getRandomIntInclusive(difficultySettings.jarSpinRdmIntMin, difficultySettings.jarSpinRdmIntMax))
+
+    // add an event listener to move the caterpillar and later the butterfly
+    document.addEventListener('keydown', movementHandler)
+    
     // add Timers to global list --> this will allow the removal of them later
     timers.push(createFoodInterval)
     timers.push(drainSleepInterval)
-    timers.push(jarShakesInterval)
+    //timers.push(jarShakesInterval)
 
+}
+
+//********************************************** EVENT LISTENERS TO SET DIFFICULTY AND CONTINIOUSLY RUN GAME LOOP ***************************************************
+
+//add event listeners that are needed when the game loads
+document.addEventListener('DOMContentLoaded', function() {
+
+    // event listeners for selecting difficulty level which then sets up the game!
+    easyButton.addEventListener('click', function() {difficultyRequest = 0; myModal.hide(); setupGame()})
+    mediumButton.addEventListener('click', function() {difficultyRequest = 1; myModal.hide(); setupGame() })
+    hardButton.addEventListener('click', function() {difficultyRequest = 2; myModal.hide(); setupGame()})
+
+    //show the modal with the option to choose difficulty
+    var myModal = new bootstrap.Modal(document.getElementById('myModal'))
+    myModal.show()
+  
+    // these are never ending intervals and therefore do not need a variable to set timeout
+    setInterval(screenRefresh, 60)
+    setInterval(changeBackgroundPhoto, 200)
 })
+
